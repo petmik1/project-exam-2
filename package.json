@@ -19,7 +19,8 @@
     "@mui/joy": "^5.0.0-beta.2",
     "@mui/material": "^5.14.5",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

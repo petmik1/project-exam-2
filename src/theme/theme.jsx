@@ -81,6 +81,10 @@ const theme = createTheme({
         root: {
           height: '100vh',
           backgroundColor: secondary,
+          borderRadius: '0',
+          '@media (min-width:1200px)': {
+            borderRadius: '20px',
+          }
 
         },
       },
