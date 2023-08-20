@@ -1,32 +1,46 @@
-import { AppBar, Typography, Toolbar, Link, Box } from '@mui/material'
+import { AppBar, Typography, Toolbar, Link } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 
 function Header() {
   return (
-    <Box mt={{ padding: 0 }}>
-        <AppBar position="static" color="transparent" elevation={0} sx={{borderBottom:'3px solid'}} >
-            <Toolbar>
-                <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
-                    <Link href="/" underline="none" color="textPrimary">
-                        <IconButton>
-                            <img src="/logo.png" alt="logo" width="50" height="50" />
-                        </IconButton>
-                    </Link>
-                </Typography>
-                <Link href="/login" underline="none" color="textPrimary">
-                    <Typography variant="body1" sx={{ flexGrow: 1 }}>
-                        Login
-                    </Typography>
-                </Link>
-                <Link href="/register" underline="none" color="textPrimary">
-                    <Typography variant="body1" sx={{ flexGrow: 1 }}>
-                        Register
-                    </Typography>
-                </Link>
-            </Toolbar>
-        </AppBar>
-    
-    </Box>
+    <AppBar
+      position="static"
+      sx={{
+        borderRadius: { xs: 0, md: '10px 10px 0 0' },
+        backgroundColor: { xs: 'primary.main', md: 'secondary.main' },
+        borderBottom: '3px solid',
+        borderBottomColor: 'primary.main',
+      }}
+    >
+      <Toolbar
+        sx={{
+          mt: '1rem',
+        }}
+      >
+        <Link
+          href="/"
+          underline="none"
+          color="textPrimary"
+          sx={{ flexGrow: 1 }}
+        >
+          <IconButton>
+            <img src="/logo.png" alt="" width={'150px'} />
+          </IconButton>
+        </Link>
+        <Link href="/login" underline="none" sx={{}}>
+          <Typography
+            variant="h2"
+            sx={{
+              flexGrow: 1,
+              p: '2rem',
+              color: { xs: 'text.secondary', md: 'text.primary' },
+            }}
+          >
+            Login
+          </Typography>
+        </Link>
+      </Toolbar>
+    </AppBar>
   )
 }
 

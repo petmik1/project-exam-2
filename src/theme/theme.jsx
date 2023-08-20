@@ -27,6 +27,10 @@ const theme = createTheme({
     success: {
       main: success,
     },
+    text: {
+      primary: text,
+      secondary: white,
+    },
   },
 
   typography: {
@@ -80,9 +84,12 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           height: '100vh',
-          padding: '0',
           backgroundColor: secondary,
           borderRadius: '0',
+          padding: '0',
+          '@media (min-width:600px)': {
+            padding: '0',
+          },
           '@media (min-width:1200px)': {
             borderRadius: '20px',
           }

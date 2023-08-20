@@ -5,9 +5,12 @@ function App() {
   return (
     <>
       <Routes>
-        <Route index element={<Layout/>}>
-          
+        <Route path='/' element={<Layout/>}>
+          <Route index element={<h1>home</h1>}/>
+          <Route path="/login" element={<h1>login</h1>}/>
+
         </Route>
+
       </Routes>
     </>
   )
