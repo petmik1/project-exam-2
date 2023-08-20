@@ -80,6 +80,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           height: '100vh',
+          padding: '0',
           backgroundColor: secondary,
           borderRadius: '0',
           '@media (min-width:1200px)': {
