@@ -30,7 +30,7 @@ function Header() {
         <Link href="/" underline="none" color="textPrimary">
           <img src="/logo.png" alt="" width="100px" />
         </Link>
-        <MenuIcon onClick={hamburgerMenu} sx={{ display: { md: 'none' } }} />
+        <MenuIcon fontSize='large' onClick={hamburgerMenu} sx={{ display: { md: 'none' } }} />
         <Link
           href="/login"
           underline="none"
