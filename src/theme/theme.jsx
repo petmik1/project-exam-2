@@ -62,7 +62,6 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: secondary,
-
         },
       },
     },
@@ -83,17 +82,18 @@ const theme = createTheme({
     MuiContainer: {
       styleOverrides: {
         root: {
-          height: '100vh',
+          height: '100%',
           backgroundColor: secondary,
           borderRadius: '0',
           padding: '0',
+          
           '@media (min-width:600px)': {
             padding: '0',
+            height:'100vh'
           },
           '@media (min-width:1200px)': {
             borderRadius: '20px',
-          }
-
+          },
         },
       },
     },
@@ -106,13 +106,24 @@ const theme = createTheme({
         notchedOutline: {
           borderColor: primary,
           borderWidth: '3px',
-        }, 
-        
+        },
       },
     },
-
-      }
-    }
-  )
+    MuiPaper: {
+      styleOverrides: {
+        root: {},
+        secondary: {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '1rem',
+          border: '3px solid',
+          borderColor: primary,
+          borderRadius: '20px',
+        },
+      },
+    },
+  },
+})
 
 export default theme
