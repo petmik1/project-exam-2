@@ -3,6 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 import { useState } from 'react'
 
+
 function Header() {
   const [navBarOpen, setNavBarOpen] = useState(false)
 

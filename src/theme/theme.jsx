@@ -86,10 +86,10 @@ const theme = createTheme({
           backgroundColor: secondary,
           borderRadius: '0',
           padding: '0',
+          minHeight: '100vh',
           
           '@media (min-width:600px)': {
             padding: '0',
-            height:'100vh'
           },
           '@media (min-width:1200px)': {
             borderRadius: '20px',
@@ -116,10 +116,11 @@ const theme = createTheme({
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          padding: '1rem',
+          padding: '0 0 1rem 0 ',
           border: '3px solid',
           borderColor: primary,
           borderRadius: '20px',
+          overflow: 'hidden',
         },
       },
     },
