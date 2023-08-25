@@ -1,6 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/layout'
 import Home from './pages/Home'
+import Product from './pages/Product'
+import Login from './pages/Login'
 
 function App() {
   return (
@@ -8,7 +10,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="/login" element={<h1>login</h1>} />
+          <Route path="/product" element={<Product/>} />
+          <Route path="/login" element={<Login/>} />
         </Route>
       </Routes>
     </>
