@@ -24,7 +24,7 @@ function Home() {
         <Grid item>
           <Link href="/product" underline="none">
             <Paper variant="secondary">
-              <img src="/product.png " alt="" />
+              <img src="/product.png " alt="" /> 
               <Box
                 display={'flex'}
                 flexDirection={'column'}
