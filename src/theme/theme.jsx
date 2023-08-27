@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material'
+import { red } from '@mui/material/colors'
 
 const primary = '#00679F'
 const secondary = '#DAE6EF'
@@ -87,7 +88,7 @@ const theme = createTheme({
           borderRadius: '0',
           padding: '0',
           minHeight: '100vh',
-          
+
           '@media (min-width:600px)': {
             padding: '0',
           },
@@ -121,6 +122,34 @@ const theme = createTheme({
           borderColor: primary,
           borderRadius: '20px',
           overflow: 'hidden',
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          border: '3px solid',
+          borderBottom: 0,
+          borderColor: primary,
+          borderRadius: '10px 10px 0 0',
+          color: text,
+          opacity: 0.5,
+          '&:hover': {
+            backgroundColor: primary,
+            color: white,
+          },
+          '&.Mui-selected': {
+            color: text,
+            opacity: 1,
+          },
+        },
+      },
+    },
+    MuiTabs: {
+      styleOverrides: {
+        indicator: {
+          opacity: 0,
+          
         },
       },
     },
