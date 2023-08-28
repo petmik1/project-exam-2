@@ -132,8 +132,7 @@ const theme = createTheme({
           borderBottom: 0,
           borderColor: primary,
           borderRadius: '10px 10px 0 0',
-          color: text,
-          opacity: 0.5,
+          color: 'rgba(0, 0, 0, 0.5)',
           '&:hover': {
             backgroundColor: primary,
             color: white,
