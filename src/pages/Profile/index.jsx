@@ -8,20 +8,17 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import ProfilePicture from '../../components/profilePicture'
 
-
-
 function Profile() {
   const [value, setValue] = useState('1')
-
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
- 
 
   return (
-    <>{ <ProfilePicture/> }
-      
+    <>
+      {<ProfilePicture />}
+
       <Box display={'flex'} justifyContent={'center'}>
         <Box maxWidth={'650px'} width={'100%'}>
           <TabContext value={value}>
