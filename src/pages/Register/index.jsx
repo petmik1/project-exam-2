@@ -6,6 +6,8 @@ function Register() {
     defaultValues: {
       email: '',
       password: '',
+      name: '',
+      avatar: '',
     },
   })
 
