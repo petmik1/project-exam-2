@@ -2,12 +2,37 @@ import { Box, Grid, List, ListItemText, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import setTitle from '../../components/setTitle'
+import api from '../../data/apiBase'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import _ from 'lodash'
+import CheckIcon from '@mui/icons-material/Check'
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb'
 
-const tommorow = dayjs().add(1, 'day')
-const dayAfterTommorow = dayjs().add(2, 'day')
+const tomorrow = dayjs().add(1, 'day')
+const dayAfterTomorrow = dayjs().add(2, 'day')
 
 function Product() {
-  setTitle('Product')
+  const [venue, setVenue] = useState([])
+  const { id } = useParams()
+
+  useEffect(() => {
+    const fetchVenue = async () => {
+      const response = await api.get('/venues/' + id)
+      try {
+        setVenue(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchVenue()
+  }, [id])
+
+  let meta = _.get(venue, 'meta', {})
+  let location = _.get(venue, 'location', {})
+
+  setTitle(venue.location)
+
   return (
     <Box m={{ xs: '1rem', md: '5rem' }}>
       <Grid container spacing={2}>
@@ -20,7 +45,7 @@ function Product() {
           alignItems={'left'}
         >
           <img
-            src="/product.png"
+            src={venue.media}
             alt=""
             width={'90%'}
             style={{
@@ -32,45 +57,58 @@ function Product() {
         </Grid>
         <Grid item xs={12} md={6}>
           <Box display={'flex'} flexDirection={'column'} alignItems={'left'}>
-            <Typography variant={'h1'}>Title</Typography>
+            <Typography variant={'h1'}></Typography>
             <List>
-              <ListItemText primary={'price'} />
-              <ListItemText primary={'max guests'} />
-              <ListItemText primary={'rating'} />
-              <ListItemText primary={'location'} />
+              <ListItemText primary={'price: $' + venue.price} />
+              <ListItemText primary={'max guests: ' + venue.maxGuests} />
+              <ListItemText primary={'rating: ' + venue.rating + '/10'} />
+              <ListItemText primary={'location: ' + location.city} />
               <Typography variant="body1" color="initial">
-                this is a example of a body text Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Aliquam blandit consectetur odio,
-                sed mollis massa laoreet a. Nunc tincidunt est augue, aliquet
-                tristique lectus sagittis id. Aenean ut tellus vel sem tristique
-                facilisis non ac elit.{' '}
+                {venue.description}
               </Typography>
             </List>
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box display={'flex'} flexDirection={'column'} alignItems={'left'}>
-            <List>
-              <ListItemText primary={'WIFI:'} />
-              <ListItemText primary={'Parking:'} />
-              <ListItemText primary={'Breakfast:'} />
-              <ListItemText primary={'Pets:'} />
-              <br />
-              <ListItemText primary={'location:'} />
-              <ListItemText primary={'Address:'} />
-              <ListItemText primary={'Zip:'} />
-              <ListItemText primary={'City:'} />
-              <ListItemText primary={'Country:'} />
-              <ListItemText primary={'continent:'} />
-            </List>
-          </Box>
+          <List sx={{ display: 'flex', width: '50%' }}>
+            <ListItemText primary={'wifi:'} />
+            <ListItemText
+              primary={meta.wifi ? <CheckIcon /> : <DoNotDisturbIcon />}
+            />
+          </List>
+          <List sx={{ display: 'flex', width: '50%' }}>
+            <ListItemText primary={'Parking:'} />
+            <ListItemText
+              primary={meta.parking ? <CheckIcon /> : <DoNotDisturbIcon />}
+            />
+          </List>
+          <List sx={{ display: 'flex', width: '50%' }}>
+            <ListItemText primary={'Breakfast:'} />
+            <ListItemText
+              primary={meta.breakfast ? <CheckIcon /> : <DoNotDisturbIcon />}
+            />
+          </List>
+          <List sx={{ display: 'flex', width: '50%' }}>
+            <ListItemText primary={'Pets:'} />
+            <ListItemText
+              primary={meta.pets ? <CheckIcon /> : <DoNotDisturbIcon />}
+            />
+          </List>
+          <List>
+            {Object.values(location).map((value, index) => (
+              <ListItemText
+                primary={Object.keys(location)[index] + ': ' + value}
+                key={index}
+              />
+            ))}
+          </List>
         </Grid>
         <Grid item xs={12} md={6}>
           <Box>
             <Typography variant="h2">from</Typography>
-            <DatePicker minDate={tommorow} />
+            <DatePicker minDate={tomorrow} />
             <Typography variant="h2">to</Typography>
-            <DatePicker minDate={dayAfterTommorow} />
+            <DatePicker minDate={dayAfterTomorrow} />
           </Box>
         </Grid>
       </Grid>
