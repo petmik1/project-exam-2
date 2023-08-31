@@ -79,7 +79,6 @@ function Register() {
           <Button
             variant="contained"
             type="submit"
-            sx={{ width: { xs: '100%', md: '50%' } }}
           >
             Login
           </Button>
