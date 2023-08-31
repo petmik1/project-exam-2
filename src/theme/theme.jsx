@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material'
-import { red } from '@mui/material/colors'
+
 
 const primary = '#00679F'
 const secondary = '#DAE6EF'
