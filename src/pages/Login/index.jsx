@@ -1,7 +1,9 @@
 import { TextField, Button, Stack, Link, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
+import setTitle from '../../components/setTitle'
 
 function Login() {
+  setTitle('Login')
   const form = useForm({
     defaultValues: {
       email: '',

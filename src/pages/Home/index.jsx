@@ -1,7 +1,9 @@
 import { Box, Paper, TextField, Typography, Link } from '@mui/material'
 import Grid from '@mui/material/Grid'
+import setTitle from '../../components/setTitle'
 
 function Home() {
+  setTitle('Home')
   return (
     <Box p="2rem" display={'flex'} flexDirection={'column'}>
       <Box margin={'0 auto'} pb={'2rem'}>

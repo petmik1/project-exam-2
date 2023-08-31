@@ -8,8 +8,10 @@ import {
   Grid,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
+import setTitle from '../../components/setTitle'
 
 function CreateVenue() {
+  setTitle('Create venue')
   const form = useForm({
     defaultValues: {
       name: '',
@@ -44,10 +46,11 @@ function CreateVenue() {
         Create venue
       </Typography>
 
-      
-      <Box maxWidth={'800px'} margin={'1rem auto'}><Typography variant="h2" textAlign={'left'}  >
-        General
-      </Typography></Box>
+      <Box maxWidth={'800px'} margin={'1rem auto'}>
+        <Typography variant="h2" textAlign={'left'}>
+          General
+        </Typography>
+      </Box>
       <Box
         display={'flex'}
         flexDirection={'column'}

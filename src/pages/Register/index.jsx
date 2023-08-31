@@ -1,7 +1,9 @@
 import { TextField, Button, Grid, Link, Box, Typography, Switch, FormControlLabel } from '@mui/material'
 import { useForm } from 'react-hook-form'
+import setTitle from '../../components/setTitle'
 
 function Register() {
+  setTitle('Register')
   const form = useForm({
     defaultValues: {
       email: '',

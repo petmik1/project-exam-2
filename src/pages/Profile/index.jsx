@@ -7,8 +7,10 @@ import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import ProfilePicture from '../../components/profilePicture'
+import setTitle from '../../components/setTitle'
 
 function Profile() {
+  setTitle('Profile')
   const [value, setValue] = useState('1')
 
   const handleChange = (event, newValue) => {

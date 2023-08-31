@@ -8,8 +8,10 @@ import {
     Grid,
   } from '@mui/material'
   import { useForm } from 'react-hook-form'
+  import setTitle from '../../components/setTitle'
   
   function EditVenue() {
+    setTitle('Edit venue')
     const form = useForm({
       defaultValues: {
         name: '',

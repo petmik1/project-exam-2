@@ -1,11 +1,13 @@
 import { Box, Grid, List, ListItemText, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
+import setTitle from '../../components/setTitle'
 
 const tommorow = dayjs().add(1, 'day')
 const dayAfterTommorow = dayjs().add(2, 'day')
 
 function Product() {
+  setTitle('Product')
   return (
     <Box m={{ xs: '1rem', md: '5rem' }}>
       <Grid container spacing={2}>
