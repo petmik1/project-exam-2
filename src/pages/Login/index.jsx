@@ -1,6 +1,7 @@
 import { TextField, Button, Stack, Link, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import setTitle from '../../components/setTitle'
+import api from '../../data/apiBase'
 
 function Login() {
   setTitle('Login')
@@ -14,12 +15,22 @@ function Login() {
   const { register, handleSubmit } = form
 
   const onsubmit = (data) => {
-    console.log(data)
+    const login = async () => {
+      const response = await api.post('/auth/login', data)
+      try {
+        console.log(response.data.name)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    login()
   }
 
   return (
     <>
-      <Typography variant="h1" textAlign={'center'} mt='2rem' >Login</Typography>
+      <Typography variant="h1" textAlign={'center'} mt="2rem">
+        Login
+      </Typography>
       <form
         onSubmit={handleSubmit(onsubmit)}
         style={{

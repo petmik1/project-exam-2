@@ -26,22 +26,17 @@ function Register() {
 
   const { register, handleSubmit } = form
   const onsubmit = (data) => {
-    api
-      .post('/auth/register', data)
-      .then((response) => {
-        console.log(response)
-      })
-      .catch(function (error) {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.log(error.response.data.errors[0].message)
-        } else if (error.request) {
-          console.log(error.request)
-        } else {
-          console.log('Error', error.message)
-        }
-      })
+    const register = async () => {
+      const response = await api.post('/auth/register', data)
+      try {
+        console.log(response.data)
+        return response.data
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    register()
+
   }
 
   return (
