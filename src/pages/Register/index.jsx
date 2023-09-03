@@ -1,6 +1,16 @@
-import { TextField, Button, Grid, Link, Box, Typography, Switch, FormControlLabel } from '@mui/material'
+import {
+  TextField,
+  Button,
+  Grid,
+  Link,
+  Box,
+  Typography,
+  Switch,
+  FormControlLabel,
+} from '@mui/material'
 import { useForm } from 'react-hook-form'
 import setTitle from '../../components/setTitle'
+import api from '../../data/apiBase'
 
 function Register() {
   setTitle('Register')
@@ -10,13 +20,28 @@ function Register() {
       password: '',
       name: '',
       avatar: '',
+      propertyManager: false,
     },
   })
 
   const { register, handleSubmit } = form
-
   const onsubmit = (data) => {
-    console.log(data)
+    api
+      .post('/auth/register', data)
+      .then((response) => {
+        console.log(response)
+      })
+      .catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data.errors[0].message)
+        } else if (error.request) {
+          console.log(error.request)
+        } else {
+          console.log('Error', error.message)
+        }
+      })
   }
 
   return (
@@ -65,7 +90,11 @@ function Register() {
           ></TextField>
         </Grid>
         <Grid item xs={12}>
-        <FormControlLabel {...register('propertyManager')} control={<Switch/>} label="property manager" />
+          <FormControlLabel
+            {...register('propertyManager')}
+            control={<Switch />}
+            label="property manager"
+          />
         </Grid>
         <Box
           display={'flex'}
@@ -76,10 +105,7 @@ function Register() {
           <Link color="primary" href="/login" textAlign={'left'}>
             already have a user? login here
           </Link>
-          <Button
-            variant="contained"
-            type="submit"
-          >
+          <Button variant="contained" type="submit">
             Login
           </Button>
         </Box>
