@@ -20,21 +20,27 @@ function Register() {
       password: '',
       name: '',
       avatar: '',
-      propertyManager: false,
+      propertyManager: '',
     },
   })
 
   const { register, handleSubmit } = form
-  const onsubmit = (data) => {
-    const register = async () => {
-      const response = await api.post('/auth/register', data)
+  const onsubmit = async(data) => {
+   
+      
       try {
-        console.log(response.data)
-        return response.data
+        await api.post('/auth/register', data)
+        location.href = '/login'
       } catch (error) {
-        console.log(error)
+        if (error.response) {
+          console.log(error.response.data.errors[0].message)
+        } else if (error.request) {
+          console.log(error.request)
+        } else {
+          console.log('Error', error.message)
+        }
       }
-    }
+    
     register()
 
   }

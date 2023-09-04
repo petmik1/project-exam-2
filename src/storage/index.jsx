@@ -1,7 +1,7 @@
-import { save } from './save.js'
-import { remove } from './remove.js'
-import { clear } from './clear.js'
-import { load } from './load.js'
+import { save } from './save.jsx'
+import { remove } from './remove.jsx'
+import { clear } from './clear.jsx'
+import { load } from './load.jsx'
 
 export default {
   save,

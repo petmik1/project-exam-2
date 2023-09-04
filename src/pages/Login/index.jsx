@@ -2,6 +2,7 @@ import { TextField, Button, Stack, Link, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import setTitle from '../../components/setTitle'
 import api from '../../data/apiBase'
+import storage from '../../storage'
 
 function Login() {
   setTitle('Login')
@@ -14,16 +15,22 @@ function Login() {
 
   const { register, handleSubmit } = form
 
-  const onsubmit = (data) => {
-    const login = async () => {
+  console.log(storage.load('user'))
+
+  const onsubmit = async (data) => {
+    try {
       const response = await api.post('/auth/login', data)
-      try {
-        console.log(response.data.name)
-      } catch (error) {
-        console.log(error)
+      storage.save('user', response.data)
+      location.href = '/'
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.data.errors[0].message)
+      } else if (error.request) {
+        console.log(error.request)
+      } else {
+        console.log('Error', error.message)
       }
     }
-    login()
   }
 
   return (
