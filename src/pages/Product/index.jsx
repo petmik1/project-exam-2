@@ -1,4 +1,12 @@
-import { Box, Grid, List, ListItemText, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Grid,
+  List,
+  ListItemText,
+  Typography,
+  Slider,
+} from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import setTitle from '../../components/setTitle'
@@ -8,13 +16,25 @@ import { useParams } from 'react-router-dom'
 import _ from 'lodash'
 import CheckIcon from '@mui/icons-material/Check'
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb'
+import { useForm } from 'react-hook-form'
+import storage from '../../storage'
 
 const tomorrow = dayjs().add(1, 'day')
 const dayAfterTomorrow = dayjs().add(2, 'day')
 
 function Product() {
   const [venue, setVenue] = useState([])
+  // const [guest, setGuest] = useState(1)
   const { id } = useParams()
+  const form = useForm({
+    defaultValues: {
+      from: tomorrow,
+      to: dayAfterTomorrow,
+      guests: Number(1),
+    },
+  })
+
+  const { register, handleSubmit } = form
 
   useEffect(() => {
     const fetchVenue = async () => {
@@ -27,6 +47,26 @@ function Product() {
     }
     fetchVenue()
   }, [id])
+
+  const createBooking = async (data) => {
+    const booking = {
+      dateFrom: dayjs(data.from).format('YYYY-MM-DD'),
+      dateTo: dayjs(data.to).format('YYYY-MM-DD'),
+      venueId: id,
+      guests: Number(data.guests) ,
+    }
+    console.log(booking)
+    try {
+      const response = await api.post('/bookings', booking, {
+        headers: {
+          Authorization: `Bearer ${storage.load('user').accessToken}`,
+        },
+      })
+      console.log(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   let meta = _.get(venue, 'meta', {})
   let location = _.get(venue, 'location', {})
@@ -104,11 +144,31 @@ function Product() {
           </List>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Box>
+          <Box
+            component={'form'}
+            onSubmit={handleSubmit(createBooking)}
+            display={'flex'}
+            flexDirection={'column'}
+          >
             <Typography variant="h2">from</Typography>
-            <DatePicker minDate={tomorrow} />
+            <DatePicker defaultValue={tomorrow} {...register('from')} />
             <Typography variant="h2">to</Typography>
-            <DatePicker minDate={dayAfterTomorrow} />
+            <DatePicker defaultValue={dayAfterTomorrow} {...register('to')} />
+            <Typography variant="h2">guests</Typography>
+            <Slider
+              aria-label="guests"
+              defaultValue={1}
+              // onChange={(e) => setGuest(e.target.value)}
+              {...register('guests')}
+              valueLabelDisplay="auto"
+              step={1}
+              marks
+              min={1}
+              max={venue.maxGuests}
+            />
+            <Button variant="contained" type="submit">
+              Create booking
+            </Button>
           </Box>
         </Grid>
       </Grid>
