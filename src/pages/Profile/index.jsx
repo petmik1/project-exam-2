@@ -11,6 +11,7 @@ import setTitle from '../../components/setTitle'
 import storage from '../../storage'
 import api from '../../data/apiBase'
 import { useEffect } from 'react'
+import { max } from 'lodash'
 
 function Profile() {
   setTitle('Profile')
@@ -20,11 +21,15 @@ function Profile() {
 
   useEffect(() => {
     const fetchVenues = async () => {
-      const response = await api.get('/profiles/' + user.name + '/bookings', {
-        headers: {
-          Authorization: `Bearer ${user.accessToken}`,
-        },
-      })
+      const response = await api.get(
+        '/profiles/' + user.name + '/bookings' + '?_venue=true',
+        {
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        }
+      )
+
       try {
         setBookings(response.data)
       } catch (error) {
@@ -48,10 +53,14 @@ function Profile() {
             <Box pl={'1rem'}>
               <TabList
                 onChange={handleChange}
-                aria-label="lab API tabs example"
+                aria-label="booking or venues tabs"
               >
                 <Tab label="bookings" value="1" />
-                <Tab label="venues" sx={{display: user.venueManager ? 'block' : 'none'}}  value="2" />
+                <Tab
+                  label="venues"
+                  sx={{ display: user.venueManager ? 'block' : 'none' }}
+                  value="2"
+                />
               </TabList>
             </Box>
             <TabPanel
@@ -69,18 +78,35 @@ function Profile() {
                 justifyContent={'space-between'}
                 flexDirection={{ xs: 'column', md: 'row' }}
               >
-                <img src="/product.png" alt="" />
-                <Box
-                  display={{ xs: 'block', md: 'flex' }}
-                  justifyContent={'center'}
-                  alignContent={'center'}
-                  flexDirection={'column'}
-                >
-                  <Typography variant="h2" textAlign={{ md: 'center' }}>
-                    header
-                  </Typography>
-                  <Button variant="contained">more info</Button>
-                </Box>
+                {bookings.map((booking) => {
+                  return (
+                    <Box
+                      display={{ xs: 'block', md: 'flex' }}
+                      justifyContent={'space-between'}
+                      alignContent={'space-between'}
+                      flexDirection={'row'}
+                      key={booking.id}
+                    >
+                      <img
+                        src={booking.venue.media[0]}
+                        alt=""
+                        style={{
+                          borderRadius: '20px',
+                          border: '3px solid',
+                          borderColor: '#00679F',
+                          maxWidth: '300px',
+                          maxHeight: '300px',
+                        }}
+                      />
+                      <Box>
+                        <Typography variant="h2" textAlign={{ md: 'center' }}>
+                          {booking.venue.name}
+                        </Typography>
+                        <Button variant="contained">more info</Button>
+                      </Box>
+                    </Box>
+                  )
+                })}
               </Box>
               <Box display={bookings.length > 0 ? 'none' : 'block'}>
                 <Typography variant="h2" textAlign={{ md: 'center' }}>
@@ -103,18 +129,23 @@ function Profile() {
                 justifyContent={'space-between'}
                 flexDirection={{ xs: 'column', md: 'row' }}
               >
-                <img src="/product.png" alt="" />
-                <Box
-                  display={{ xs: 'block', md: 'flex' }}
-                  justifyContent={'center'}
-                  alignContent={'center'}
-                  flexDirection={'column'}
-                >
-                  <Typography variant="h2" textAlign={{ md: 'center' }}>
-                    header
-                  </Typography>
-                  <Button variant="contained">more info</Button>
-                </Box>
+                {bookings.map((booking) => {
+                  return (
+                    <Box
+                      display={{ xs: 'block', md: 'flex' }}
+                      justifyContent={'center'}
+                      alignContent={'center'}
+                      flexDirection={'column'}
+                      key={booking.id}
+                    >
+                      <img src={booking.venue.media[0]} alt="" />
+                      <Typography variant="h2" textAlign={{ md: 'center' }}>
+                        {booking.venue.name}
+                      </Typography>
+                      <Button variant="contained">more info</Button>
+                    </Box>
+                  )
+                })}
               </Box>
               <Box display={bookings.length > 0 ? 'none' : 'block'}>
                 <Typography variant="h2" textAlign={{ md: 'center' }}>

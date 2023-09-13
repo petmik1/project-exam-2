@@ -5,9 +5,12 @@ import TextField from '@mui/material/TextField'
 import { useForm } from 'react-hook-form'
 import Button from '@mui/material/Button'
 import { useState } from 'react'
+import storage from '../../storage'
 
 function ProfilePicture() {
   const [open, setOpen] = useState(false)
+  const [user, setUser] = useState(storage.load('user'))
+
 
   const handleClickOpen = () => {
     if (open === false) {
@@ -37,7 +40,7 @@ function ProfilePicture() {
         mt={'2rem'}
       >
         <Box
-          display={open ? 'flex' : 'none'}
+          display={user.avatar ? 'flex' : 'none'}
           sx={{
             width: '150px',
             height: '150px',
@@ -55,7 +58,7 @@ function ProfilePicture() {
             border: '3px solid',
             borderColor: 'primary.main',
             borderRadius: '100%',
-            display: open ? 'none' : 'flex',
+            display: user.avatar ? 'none' : 'flex',
           }}
         />
         <SettingsIcon sx={{ marginLeft: '6rem' }} onClick={handleClickOpen} />
@@ -82,7 +85,7 @@ function ProfilePicture() {
           </Button>
         </Box>
 
-        <Typography variant="h1">name</Typography>
+        <Typography variant="h1">{user.name}</Typography>
       </Box>
     </Box>
   )
