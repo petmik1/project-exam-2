@@ -11,13 +11,33 @@ import setTitle from '../../components/setTitle'
 import storage from '../../storage'
 import api from '../../data/apiBase'
 import { useEffect } from 'react'
-import { max } from 'lodash'
+import MobileStepper from '@mui/material/MobileStepper'
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
+import SwipeableViews from 'react-swipeable-views'
+import { useTheme } from '@mui/material/styles'
+import { Link } from 'react-router-dom'
 
 function Profile() {
   setTitle('Profile')
+  const theme = useTheme()
   const [value, setValue] = useState('1')
   const [bookings, setBookings] = useState([])
   const [user, setUser] = useState(storage.load('user'))
+  const [activeStep, setActiveStep] = useState(0)
+  const maxSteps = bookings.length
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1)
+  }
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1)
+  }
+
+  const handleStepChange = (step) => {
+    setActiveStep(step)
+  }
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -46,7 +66,6 @@ function Profile() {
   return (
     <>
       {<ProfilePicture />}
-
       <Box display={'flex'} justifyContent={'center'}>
         <Box maxWidth={'650px'} width={'100%'}>
           <TabContext value={value}>
@@ -77,36 +96,87 @@ function Profile() {
                 }
                 justifyContent={'space-between'}
                 flexDirection={{ xs: 'column', md: 'row' }}
+                width={'100%'}
               >
-                {bookings.map((booking) => {
-                  return (
-                    <Box
-                      display={{ xs: 'block', md: 'flex' }}
-                      justifyContent={'space-between'}
-                      alignContent={'space-between'}
-                      flexDirection={'row'}
-                      key={booking.id}
-                    >
-                      <img
-                        src={booking.venue.media[0]}
-                        alt=""
-                        style={{
-                          borderRadius: '20px',
-                          border: '3px solid',
-                          borderColor: '#00679F',
-                          maxWidth: '300px',
-                          maxHeight: '300px',
-                        }}
-                      />
-                      <Box>
-                        <Typography variant="h2" textAlign={{ md: 'center' }}>
-                          {booking.venue.name}
-                        </Typography>
-                        <Button variant="contained">more info</Button>
+                <Box width={'100%'}>
+                  <SwipeableViews
+                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                    index={activeStep}
+                    onChangeIndex={handleStepChange}
+                    enableMouseEvents
+                  >
+                    {bookings.map((booking) => (
+                      <Box
+                        display={{ xs: 'block', md: 'flex' }}
+                        justifyContent={'space-between'}
+                        alignContent={'space-between'}
+                        flexDirection={'row'}
+                        key={booking.id}
+                      >
+                        <img
+                          src={booking.venue.media[0]}
+                          alt=""
+                          style={{
+                            borderRadius: '20px',
+                            border: '3px solid',
+                            borderColor: '#00679F',
+                            maxWidth: '300px',
+                            maxHeight: '300px',
+                          }}
+                        />
+                        <Box>
+                          <Typography variant="h2" textAlign={{ md: 'center' }}>
+                            {booking.venue.name}
+                          </Typography>
+                          <Link to={`/booking/${booking.id}`}>
+                            <Button variant="contained">more info</Button>
+                          </Link>
+                        </Box>
                       </Box>
-                    </Box>
-                  )
-                })}
+                    ))}
+                  </SwipeableViews>
+                  <MobileStepper
+                    steps={maxSteps}
+                    position="static"
+                    activeStep={activeStep}
+                    sx={{
+                      maxWidth: '300px',
+                      flexGrow: 1,
+                      margin: 'auto',
+                      backgroundColor: 'transparent',
+                    }}
+                    nextButton={
+                      <Button
+                        size="small"
+                        onClick={handleNext}
+                        disabled={activeStep === maxSteps - 1}
+                        color="primary"
+                      >
+                        Next
+                        {theme.direction === 'rtl' ? (
+                          <KeyboardArrowLeft />
+                        ) : (
+                          <KeyboardArrowRight />
+                        )}
+                      </Button>
+                    }
+                    backButton={
+                      <Button
+                        size="small"
+                        onClick={handleBack}
+                        disabled={activeStep === 0}
+                        color="primary"
+                      >
+                        {theme.direction === 'rtl' ? (
+                          <KeyboardArrowRight />
+                        ) : (
+                          <KeyboardArrowLeft />
+                        )}
+                        Back
+                      </Button>
+                    }
+                  />
+                </Box>
               </Box>
               <Box display={bookings.length > 0 ? 'none' : 'block'}>
                 <Typography variant="h2" textAlign={{ md: 'center' }}>
