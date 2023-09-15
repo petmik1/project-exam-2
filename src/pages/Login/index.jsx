@@ -21,6 +21,7 @@ function Login() {
     try {
       const response = await api.post('/auth/login', data)
       storage.save('user', response.data)
+      storage.save('avatar', response.data.avatar)
       location.href = '/'
     } catch (error) {
       if (error.response) {

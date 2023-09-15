@@ -11,6 +11,7 @@ import api from '../../data/apiBase'
 function ProfilePicture() {
   const [open, setOpen] = useState(false)
   const [user, setUser] = useState(storage.load('user'))
+  const avatar = storage.load('avatar')
 
 
   const handleClickOpen = () => {
@@ -44,6 +45,8 @@ function ProfilePicture() {
       console.log(response)
       try {
         setOpen(false)
+        storage.save('avatar', response.data.avatar)
+        console.log(response.data.avatar)
         setUser(response.data)
       } catch (error) {
         console.log(error)
@@ -61,7 +64,7 @@ function ProfilePicture() {
         mt={'2rem'}
       >
         <Box
-          display={user.avatar ? 'flex' : 'none'}
+          display={avatar : user.avatar ? 'flex' : 'none'}
           component={'img'}
           src= {user.avatar}
           sx={{
