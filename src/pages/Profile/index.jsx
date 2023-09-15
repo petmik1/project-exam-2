@@ -23,7 +23,7 @@ function Profile() {
   const theme = useTheme()
   const [value, setValue] = useState('1')
   const [bookings, setBookings] = useState([])
-  const [user, setUser] = useState(storage.load('user'))
+  const [user] = useState(storage.load('user'))
   const [activeStep, setActiveStep] = useState(0)
   const maxSteps = bookings.length
 

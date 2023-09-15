@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import Button from '@mui/material/Button'
 import { useState } from 'react'
 import storage from '../../storage'
+import api from '../../data/apiBase'
 
 function ProfilePicture() {
   const [open, setOpen] = useState(false)
@@ -27,8 +28,28 @@ function ProfilePicture() {
 
   const { register, handleSubmit } = form
 
-  const onsubmit = (data) => {
+  const onsubmit = async (data) => {
     console.log(data)
+    console.log(user)
+
+      const response = await api.put(
+        '/profiles/' + user.name + '/media',
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        }
+      )
+      console.log(response)
+      try {
+        setOpen(false)
+        setUser(response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    
+    
   }
   return (
     <Box>
@@ -41,16 +62,16 @@ function ProfilePicture() {
       >
         <Box
           display={user.avatar ? 'flex' : 'none'}
+          component={'img'}
+          src= {user.avatar}
           sx={{
             width: '150px',
             height: '150px',
             border: '3px solid',
             borderColor: 'primary.main',
-            borderRadius: '100%',
-            backgroundImage: 'url(/product.png)',
+            borderRadius: '100%',            
           }}
         ></Box>
-
         <PermIdentityOutlinedIcon
           sx={{
             width: '150px',
