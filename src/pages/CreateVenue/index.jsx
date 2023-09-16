@@ -10,14 +10,16 @@ import {
 import { useForm } from 'react-hook-form'
 import setTitle from '../../components/setTitle'
 import api from '../../data/apiBase'
+import { useState } from 'react'
+import storage from '../../storage'
 
 function CreateVenue() {
   setTitle('Create venue')
   const form = useForm({
     defaultValues: {
       name: '',
-      media: [],
-      max_guests: Number(),
+      media: [''],
+      maxGuests: Number(),
       rating: Number(),
       price: Number(),
       description: '',
@@ -37,10 +39,16 @@ function CreateVenue() {
   })
 
   const { register, handleSubmit } = form
+  const [user, setUser] = useState(storage.load('user'))
 
   const onsubmit = async (data) => {
     console.log(data)
-    const response = await api.post('/venues', data)
+    const response = await api.post('/venues', data,
+    {
+      headers: {
+        Authorization: `Bearer ${user.accessToken}`,
+      },
+    })
     try {
       console.log(response)
     } catch (error) {
@@ -86,41 +94,54 @@ function CreateVenue() {
             <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
-                label="media"
-                type="text"
-                {...register('media')}
-              ></TextField>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                sx={{ width: '100%' }}
                 label="max_guests"
                 type="number"
-                {...register('max_guests')}
+                inputProps={{ min: 0 }}
+                {...register('maxGuests', { valueAsNumber: true })}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
                 label="rating"
-                type="text"
-                {...register('rating')}
+                type="number"
+                inputProps={{ min: 0, max: 5 }}
+                {...register('rating', { valueAsNumber: true })}
               ></TextField>
             </Grid>
             <Grid
               item
               xs={12}
+              md={6}
               display={'flex'}
               justifyContent={'center'}
               alignItems={'center'}
             >
               <TextField
-                sx={{ width: '50%' }}
+                sx={{ width: '100%' }}
                 label="price"
-                type="text"
-                {...register('price')}
+                type="number"
+                inputProps={{ min: 0 }}
+                {...register('price', { valueAsNumber: true })}
               ></TextField>
             </Grid>
+
+            <Grid
+              item
+              xs={12}
+              md={6}
+              display={'flex'}
+              justifyContent={'center'}
+              alignItems={'center'}
+            >
+              <TextField
+                sx={{ width: '100%' }}
+                label="media"
+                type="text"
+                {...register('media[0]')}
+              ></TextField>
+            </Grid>
+
             <Grid
               item
               xs={12}
