@@ -9,35 +9,43 @@ import {
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import setTitle from '../../components/setTitle'
+import api from '../../data/apiBase'
 
 function CreateVenue() {
   setTitle('Create venue')
   const form = useForm({
     defaultValues: {
       name: '',
-      media: '',
-      max_guests: '',
-      rating: '',
-      price: '',
+      media: [],
+      max_guests: Number(),
+      rating: Number(),
+      price: Number(),
       description: '',
       wifi: '',
       parking: '',
       breakfast: '',
-      pets: '',
-      address: '',
-      city: '',
-      zip: '',
-      country: '',
-      continent: '',
-      longitude: '',
-      latitude: '',
+      location: {
+        address: '',
+        city: '',
+        zip: '',
+        country: '',
+        continent: '',
+        longitude: '',
+        latitude: '',
+      },
     },
   })
 
   const { register, handleSubmit } = form
 
-  const onsubmit = (data) => {
+  const onsubmit = async (data) => {
     console.log(data)
+    const response = await api.post('/venues', data)
+    try {
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -87,7 +95,7 @@ function CreateVenue() {
               <TextField
                 sx={{ width: '100%' }}
                 label="max_guests"
-                type="text"
+                type="number"
                 {...register('max_guests')}
               ></TextField>
             </Grid>
@@ -162,7 +170,7 @@ function CreateVenue() {
                 sx={{ width: '100%' }}
                 label="address"
                 type="text"
-                {...register('address')}
+                {...register('location.address')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -170,7 +178,7 @@ function CreateVenue() {
                 sx={{ width: '100%' }}
                 label="city"
                 type="text"
-                {...register('city')}
+                {...register('location.city')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -178,7 +186,7 @@ function CreateVenue() {
                 sx={{ width: '100%' }}
                 label="zip"
                 type="text"
-                {...register('zip')}
+                {...register('location.zip')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -186,7 +194,7 @@ function CreateVenue() {
                 sx={{ width: '100%' }}
                 label="country"
                 type="text"
-                {...register('country')}
+                {...register('location.country')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -194,7 +202,7 @@ function CreateVenue() {
                 sx={{ width: '100%' }}
                 label="continent"
                 type="text"
-                {...register('continent')}
+                {...register('location.continent')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -202,7 +210,7 @@ function CreateVenue() {
                 sx={{ width: '100%' }}
                 label="longitude"
                 type="text"
-                {...register('longitude')}
+                {...register('location.longitude')}
               ></TextField>
             </Grid>
             <Grid
@@ -216,7 +224,7 @@ function CreateVenue() {
                 sx={{ width: '50%' }}
                 label="latitude"
                 type="text"
-                {...register('latitude')}
+                {...register('location.latitude')}
               ></TextField>
             </Grid>
           </Grid>

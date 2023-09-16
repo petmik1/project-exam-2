@@ -95,6 +95,27 @@ function Header() {
           </Box>
           <Box
             component={NavLink}
+            to="/createVenue"
+            style={({ isActive }) => {
+              return {
+                textDecoration: isActive ? 'underline' : 'none',
+                textDecorationColor: '#101010',
+              }
+            }}
+          >
+            <Typography
+              variant="h2"
+              sx={{
+                flexGrow: 1,
+                p: '2rem',
+                color: { xs: 'text.secondary', md: 'text.primary' },
+              }}
+            >
+              create venue
+            </Typography>
+          </Box>
+          <Box
+            component={NavLink}
             onClick={Logout}
             sx={{ textDecoration: 'none' }}
           >
@@ -203,6 +224,27 @@ function Header() {
             }}
           >
             booking
+          </Typography>
+        </Box>
+        <Box
+          component={NavLink}
+          to="/createVenue"
+          style={({ isActive }) => {
+            return {
+              textDecoration: isActive ? 'underline' : 'none',
+              textDecorationColor: '#ffffff',
+            }
+          }}
+        >
+          <Typography
+            variant="h2"
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              color: 'text.secondary',
+            }}
+          >
+            create venue
           </Typography>
         </Box>
         <Box

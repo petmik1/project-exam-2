@@ -64,7 +64,7 @@ function ProfilePicture() {
         mt={'2rem'}
       >
         <Box
-          display={avatar : user.avatar ? 'flex' : 'none'}
+          display={avatar && user.avatar ? 'flex' : 'none'}
           component={'img'}
           src= {user.avatar}
           sx={{
