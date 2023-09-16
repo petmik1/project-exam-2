@@ -20,7 +20,7 @@ function Register() {
       password: '',
       name: '',
       avatar: '',
-      propertyManager: '',
+      venueManager: '',
     },
   })
 
@@ -92,7 +92,7 @@ function Register() {
         </Grid>
         <Grid item xs={12}>
           <FormControlLabel
-            {...register('propertyManager')}
+            {...register('venueManager')}
             control={<Switch />}
             label="property manager"
           />
