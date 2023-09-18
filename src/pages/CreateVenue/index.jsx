@@ -23,9 +23,12 @@ function CreateVenue() {
       rating: Number(),
       price: Number(),
       description: '',
-      wifi: '',
-      parking: '',
-      breakfast: '',
+      meta: {
+        wifi: '',
+        parking: '',
+        breakfast: '',
+        pets: '',
+      },
       location: {
         address: '',
         city: '',
@@ -43,8 +46,7 @@ function CreateVenue() {
 
   const onsubmit = async (data) => {
     console.log(data)
-    const response = await api.post('/venues', data,
-    {
+    const response = await api.post('/venues', data, {
       headers: {
         Authorization: `Bearer ${user.accessToken}`,
       },
@@ -165,23 +167,23 @@ function CreateVenue() {
               flexDirection={'column'}
             >
               <FormControlLabel
-                {...register('wifi')}
+                {...register('meta.wifi')}
                 control={<Switch />}
                 label="Wifi"
               />
               <FormControlLabel
-                {...register('parking')}
+                {...register('meta.parking')}
                 control={<Switch />}
                 label="Parking"
               />
 
               <FormControlLabel
-                {...register('breakfast')}
+                {...register('meta.breakfast')}
                 control={<Switch />}
                 label="Breakfast"
               />
               <FormControlLabel
-                {...register('pets')}
+                {...register('meta.pets')}
                 control={<Switch />}
                 label="Pets"
               />
