@@ -39,7 +39,7 @@ function CreateVenue() {
   })
 
   const { register, handleSubmit } = form
-  const [user, setUser] = useState(storage.load('user'))
+  const [user] = useState(storage.load('user'))
 
   const onsubmit = async (data) => {
     console.log(data)

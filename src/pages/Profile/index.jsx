@@ -23,9 +23,11 @@ function Profile() {
   const theme = useTheme()
   const [value, setValue] = useState('1')
   const [bookings, setBookings] = useState([])
+  const [venues, setVenues] = useState([])
   const [user] = useState(storage.load('user'))
   const [activeStep, setActiveStep] = useState(0)
   const maxSteps = bookings.length
+  const maxStepsVenues = venues.length
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1)
@@ -40,7 +42,7 @@ function Profile() {
   }
 
   useEffect(() => {
-    const fetchVenues = async () => {
+    const fetchBookings = async () => {
       const response = await api.get(
         '/profiles/' + user.name + '/bookings' + '?_venue=true',
         {
@@ -56,11 +58,28 @@ function Profile() {
         console.log(error)
       }
     }
-    fetchVenues()
-  }, [user.name, user.accessToken])
+    fetchBookings()
+    if (user.venueManager) {
+      const fetchVenues = async () => {
+        const response = await api.get('/profiles/' + user.name + '/venues', {
+          headers: {
+            Authorization: `Bearer ${user.accessToken}`,
+          },
+        })
+
+        try {
+          setVenues(response.data)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      fetchVenues()
+    }
+  }, [user.accessToken, user.name, user.venueManager])
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
+    setActiveStep(0)
   }
 
   return (
@@ -194,30 +213,93 @@ function Profile() {
             >
               <Box
                 display={
-                  bookings.length > 0 ? { xs: 'block', md: 'flex' } : 'none'
+                  venues.length > 0 ? { xs: 'block', md: 'flex' } : 'none'
                 }
                 justifyContent={'space-between'}
                 flexDirection={{ xs: 'column', md: 'row' }}
+                width={'100%'}
               >
-                {bookings.map((booking) => {
-                  return (
-                    <Box
-                      display={{ xs: 'block', md: 'flex' }}
-                      justifyContent={'center'}
-                      alignContent={'center'}
-                      flexDirection={'column'}
-                      key={booking.id}
-                    >
-                      <img src={booking.venue.media[0]} alt="" />
-                      <Typography variant="h2" textAlign={{ md: 'center' }}>
-                        {booking.venue.name}
-                      </Typography>
-                      <Button variant="contained">more info</Button>
-                    </Box>
-                  )
-                })}
+                <Box width={'100%'}>
+                  <SwipeableViews
+                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                    index={activeStep}
+                    onChangeIndex={handleStepChange}
+                    enableMouseEvents
+                  >
+                    {venues.map((venue) => (
+                      <Box
+                        display={{ xs: 'block', md: 'flex' }}
+                        justifyContent={'space-between'}
+                        alignContent={'space-between'}
+                        flexDirection={'row'}
+                        key={venue.id}
+                      >
+                        <img
+                          src={venue.media[0]}
+                          alt=""
+                          style={{
+                            borderRadius: '20px',
+                            border: '3px solid',
+                            borderColor: '#00679F',
+                            maxWidth: '300px',
+                            maxHeight: '300px',
+                          }}
+                        />
+                        <Box>
+                          <Typography variant="h2" textAlign={{ md: 'center' }}>
+                            {venue.name}
+                          </Typography>
+                          <Link to={`/editVenue/${venue.id}`}>
+                            <Button variant="contained">Edit</Button>
+                          </Link>
+                        </Box>
+                      </Box>
+                    ))}
+                  </SwipeableViews>
+                  <MobileStepper
+                    steps={maxStepsVenues}
+                    position="static"
+                    activeStep={activeStep}
+                    sx={{
+                      maxWidth: '300px',
+                      flexGrow: 1,
+                      margin: 'auto',
+                      backgroundColor: 'transparent',
+                    }}
+                    nextButton={
+                      <Button
+                        size="small"
+                        onClick={handleNext}
+                        disabled={activeStep === maxStepsVenues - 1}
+                        color="primary"
+                      >
+                        Next
+                        {theme.direction === 'rtl' ? (
+                          <KeyboardArrowLeft />
+                        ) : (
+                          <KeyboardArrowRight />
+                        )}
+                      </Button>
+                    }
+                    backButton={
+                      <Button
+                        size="small"
+                        onClick={handleBack}
+                        disabled={activeStep === 0}
+                        color="primary"
+                      >
+                        {theme.direction === 'rtl' ? (
+                          <KeyboardArrowRight />
+                        ) : (
+                          <KeyboardArrowLeft />
+                        )}
+                        Back
+                      </Button>
+                    }
+                  />
+                </Box>
               </Box>
-              <Box display={bookings.length > 0 ? 'none' : 'block'}>
+              <Box display={venues.length > 0 ? 'none' : 'block'}>
                 <Typography variant="h2" textAlign={{ md: 'center' }}>
                   you have no venues
                 </Typography>
