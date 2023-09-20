@@ -15,7 +15,6 @@ import api from '../../data/apiBase'
 import { useState } from 'react'
 import storage from '../../storage'
 
-
 function EditVenue() {
   setTitle('Edit venue')
 
@@ -62,7 +61,7 @@ function EditVenue() {
 
   const { register, handleSubmit } = form
 
-  const onsubmit = async() => {
+  const onsubmit = async () => {
     const data = {
       name: name,
       media: media,
@@ -129,16 +128,16 @@ function EditVenue() {
   }, [form, id])
 
   const handleWifiChange = (event) => {
-    setWifi(event.target.checked);
-  };
+    setWifi(event.target.checked)
+  }
   const handleParkingChange = (event) => {
-    setParking(event.target.checked);
+    setParking(event.target.checked)
   }
   const handleBreakfastChange = (event) => {
-    setBreakfast(event.target.checked);
+    setBreakfast(event.target.checked)
   }
   const handlePetsChange = (event) => {
-    setPets(event.target.checked);
+    setPets(event.target.checked)
   }
 
   return (
@@ -218,12 +217,18 @@ function EditVenue() {
               display={'flex'}
               justifyContent={'center'}
               alignItems={'center'}
+              flexDirection={'column'}
             >
-              <Typography variant="body1" color="initial">
+              <Typography
+                variant="body1"
+                color="initial"
+                textAlign={'left'}
+                width={{ xs: '100%', md: '50%' }}
+              >
                 Price
               </Typography>
               <TextField
-                sx={{ width: '50%' }}
+                sx={{ width: { xs: '100%', md: '50%' } }}
                 value={price ? price : ''}
                 onChange={(e) => setPrice(e.target.value)}
                 type="text"
@@ -233,14 +238,20 @@ function EditVenue() {
               item
               xs={12}
               display={'flex'}
+              flexDirection={'column'}
               justifyContent={'center'}
               alignItems={'center'}
             >
-              <Typography variant="body1" color="initial">
+              <Typography
+                variant="body1"
+                color="initial"
+                textAlign={'left'}
+                width={{ xs: '100%', md: '50%' }}
+              >
                 Description
               </Typography>
               <TextField
-                sx={{ width: '50%' }}
+                sx={{ width: { xs: '100%', md: '50%' } }}
                 value={description ? description : ''}
                 onChange={(e) => setDescription(e.target.value)}
                 type="text"
@@ -257,22 +268,33 @@ function EditVenue() {
               <FormControlLabel
                 control={<Switch checked={wifi} onClick={handleWifiChange} />}
                 label="Wifi"
+                labelPlacement="start"
               />
               <FormControlLabel
-                control={<Switch checked={parking} onClick={handleParkingChange}/>}
+                control={
+                  <Switch checked={parking} onClick={handleParkingChange} />
+                }
                 label="Parking"
+                labelPlacement="start"
               />
 
               <FormControlLabel
-                control={<Switch checked={breakfast} onClick={handleBreakfastChange} />}
+                control={
+                  <Switch checked={breakfast} onClick={handleBreakfastChange} />
+                }
                 label="Breakfast"
+                labelPlacement="start"
               />
               <FormControlLabel
                 control={<Switch checked={pets} onClick={handlePetsChange} />}
                 label="Pets"
+                labelPlacement="start"
               />
             </Grid>
             <Grid item xs={12} md={6}>
+              <Typography variant="body1" color="initial">
+                Address
+              </Typography>
               <TextField
                 sx={{ width: '100%' }}
                 value={address ? address : ''}
@@ -281,6 +303,9 @@ function EditVenue() {
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
+              <Typography variant="body1" color="initial">
+                City
+              </Typography>
               <TextField
                 sx={{ width: '100%' }}
                 value={city ? city : ''}
@@ -289,6 +314,10 @@ function EditVenue() {
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
+              <Typography variant="body1" color="initial">
+                Zip
+              </Typography>
+
               <TextField
                 sx={{ width: '100%' }}
                 value={zip ? zip : ''}
@@ -297,6 +326,9 @@ function EditVenue() {
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
+              <Typography variant="body1" color="initial">
+                Country
+              </Typography>
               <TextField
                 sx={{ width: '100%' }}
                 value={country ? country : ''}
@@ -305,6 +337,9 @@ function EditVenue() {
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
+              <Typography variant="body1" color="initial">
+                Continent
+              </Typography>
               <TextField
                 sx={{ width: '100%' }}
                 value={continent ? continent : ''}
@@ -313,6 +348,9 @@ function EditVenue() {
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
+              <Typography variant="body1" color="initial">
+                Longitude
+              </Typography>
               <TextField
                 sx={{ width: '100%' }}
                 value={longitude ? longitude : ''}
@@ -326,7 +364,16 @@ function EditVenue() {
               display={'flex'}
               justifyContent={'center'}
               alignItems={'center'}
+              flexDirection={'column'}
             >
+              <Typography
+                variant="body1"
+                color="initial"
+                textAlign={'left'}
+                width={{ xs: '100%', md: '50%' }}
+              >
+                Latitude
+              </Typography>
               <TextField
                 sx={{ width: '50%' }}
                 value={latitude ? latitude : ''}
