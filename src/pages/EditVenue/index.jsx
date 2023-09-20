@@ -13,14 +13,30 @@ import { useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import api from '../../data/apiBase'
 import { useState } from 'react'
-import { set } from 'lodash'
+import storage from '../../storage'
+
 
 function EditVenue() {
   setTitle('Edit venue')
 
   const { id } = useParams()
-  const [venue, setVenue] = useState([])
-  const [meta, setMeta] = useState([])
+  const [name, setName] = useState('')
+  const [media, setMedia] = useState('')
+  const [maxGuests, setMaxGuests] = useState(Number(0))
+  const [rating, setRating] = useState(Number(0))
+  const [price, setPrice] = useState(Number(0))
+  const [description, setDescription] = useState('')
+  const [wifi, setWifi] = useState(false)
+  const [parking, setParking] = useState(false)
+  const [breakfast, setBreakfast] = useState(false)
+  const [pets, setPets] = useState(false)
+  const [address, setAddress] = useState('')
+  const [city, setCity] = useState('')
+  const [zip, setZip] = useState('')
+  const [country, setCountry] = useState('')
+  const [continent, setContinent] = useState('')
+  const [longitude, setLongitude] = useState('')
+  const [latitude, setLatitude] = useState('')
 
   const form = useForm({
     defaultValues: {
@@ -46,24 +62,85 @@ function EditVenue() {
 
   const { register, handleSubmit } = form
 
-  const onsubmit = (data) => {
+  const onsubmit = async() => {
+    const data = {
+      name: name,
+      media: media,
+      maxGuests: maxGuests,
+      rating: rating,
+      price: price,
+      description: description,
+      meta: {
+        wifi: wifi,
+        parking: parking,
+        breakfast: breakfast,
+        pets: pets,
+      },
+      location: {
+        address: address,
+        city: city,
+        zip: zip,
+        country: country,
+        continent: continent,
+        longitude: longitude,
+        latitude: latitude,
+      },
+    }
+
     console.log(data)
+    const response = await api.put('/venues/' + id, data, {
+      headers: {
+        Authorization: `Bearer ${storage.load('user').accessToken}`,
+      },
+    })
+    try {
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
     const fetchVenue = async () => {
       const response = await api.get('/venues/' + id)
       try {
-        setVenue(response.data)
-        setMeta(response.data.meta)
-        console.log(response.data)
+        setName(response.data.name)
+        setMedia(response.data.media)
+        setMaxGuests(response.data.maxGuests)
+        setRating(response.data.rating)
+        setPrice(response.data.price)
+        setDescription(response.data.description)
+        setWifi(response.data.meta.wifi)
+        setParking(response.data.meta.parking)
+        setBreakfast(response.data.meta.breakfast)
+        setPets(response.data.meta.pets)
+        setAddress(response.data.location.address)
+        setCity(response.data.location.city)
+        setZip(response.data.location.zip)
+        setCountry(response.data.location.country)
+        setContinent(response.data.location.continent)
+        setLongitude(response.data.location.longitude)
+        setLatitude(response.data.location.latitude)
       } catch (error) {
         console.log(error)
       }
     }
     fetchVenue()
   }, [form, id])
-  console.log(meta)
+
+  const handleWifiChange = (event) => {
+    setWifi(event.target.checked);
+  };
+  const handleParkingChange = (event) => {
+    setParking(event.target.checked);
+  }
+  const handleBreakfastChange = (event) => {
+    setBreakfast(event.target.checked);
+  }
+  const handlePetsChange = (event) => {
+    setPets(event.target.checked);
+  }
+
   return (
     <Box>
       <Typography variant="h1" textAlign={'center'}>
@@ -92,39 +169,47 @@ function EditVenue() {
         >
           <Grid container spacing={2} justifyContent={'center'}>
             <Grid item xs={12} md={6}>
-              <Typography variant="body1" color="initial">Name</Typography>
+              <Typography variant="body1" color="initial">
+                Name
+              </Typography>
               <TextField
                 sx={{ width: '100%' }}
-                value={venue.name ? venue.name : ''}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 type="text"
-                {...register('name')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Typography variant="body1" color="initial">Media</Typography>
+              <Typography variant="body1" color="initial">
+                Media
+              </Typography>
               <TextField
                 sx={{ width: '100%' }}
-                value={venue.media ? venue.media : ''}
+                value={media ? media : ''}
+                onChange={(e) => setMedia([e.target.value])}
                 type="text"
-                {...register('media')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Typography variant="body1" color="initial">Max guests</Typography>
+              <Typography variant="body1" color="initial">
+                Max guests
+              </Typography>
               <TextField
                 sx={{ width: '100%' }}
-                value={venue.maxGuests ? venue.maxGuests : ''}
+                value={maxGuests ? maxGuests : ''}
+                onChange={(e) => setMaxGuests(e.target.value)}
                 type="text"
-                {...register('max_guests')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Typography variant="body1" color="initial">Rating</Typography>
+              <Typography variant="body1" color="initial">
+                Rating
+              </Typography>
               <TextField
                 sx={{ width: '100%' }}
-                value={venue.rating ? venue.rating : ''}
+                value={rating ? rating : ''}
+                onChange={(e) => setRating(e.target.value)}
                 type="text"
-                {...register('rating')}
               ></TextField>
             </Grid>
             <Grid
@@ -134,12 +219,14 @@ function EditVenue() {
               justifyContent={'center'}
               alignItems={'center'}
             >
-              <Typography variant="body1" color="initial">Price</Typography>
+              <Typography variant="body1" color="initial">
+                Price
+              </Typography>
               <TextField
                 sx={{ width: '50%' }}
-                value={venue.price ? venue.price : ''}
+                value={price ? price : ''}
+                onChange={(e) => setPrice(e.target.value)}
                 type="text"
-                {...register('price')}
               ></TextField>
             </Grid>
             <Grid
@@ -149,12 +236,14 @@ function EditVenue() {
               justifyContent={'center'}
               alignItems={'center'}
             >
-              <Typography variant="body1" color="initial">Description</Typography>
+              <Typography variant="body1" color="initial">
+                Description
+              </Typography>
               <TextField
                 sx={{ width: '50%' }}
-                label="description"
+                value={description ? description : ''}
+                onChange={(e) => setDescription(e.target.value)}
                 type="text"
-                {...register('description')}
               ></TextField>
             </Grid>
             <Grid
@@ -166,74 +255,69 @@ function EditVenue() {
               flexDirection={'column'}
             >
               <FormControlLabel
-                {...register('wifi')}
-                control={meta.wifi ? <Switch checked /> : <Switch/>}
+                control={<Switch checked={wifi} onClick={handleWifiChange} />}
                 label="Wifi"
               />
               <FormControlLabel
-                {...register('parking')}
-                control={meta.parking ? <Switch checked /> : <Switch/>}
+                control={<Switch checked={parking} onClick={handleParkingChange}/>}
                 label="Parking"
               />
 
               <FormControlLabel
-                {...register('breakfast')}
-                value={true}
-                control={meta.breakfast ? <Switch checked /> : <Switch/>}
+                control={<Switch checked={breakfast} onClick={handleBreakfastChange} />}
                 label="Breakfast"
               />
               <FormControlLabel
-                {...register('pets')}
-                control={meta.pets ? <Switch checked /> : <Switch/>}
+                control={<Switch checked={pets} onClick={handlePetsChange} />}
                 label="Pets"
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
-                label="address"
+                value={address ? address : ''}
+                onChange={(e) => setAddress(e.target.value)}
                 type="text"
-                {...register('address')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
-                label="city"
+                value={city ? city : ''}
+                onChange={(e) => setCity(e.target.value)}
                 type="text"
-                {...register('city')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
-                label="zip"
+                value={zip ? zip : ''}
+                onChange={(e) => setZip(e.target.value)}
                 type="text"
-                {...register('zip')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
-                label="country"
+                value={country ? country : ''}
+                onChange={(e) => setCountry(e.target.value)}
                 type="text"
-                {...register('country')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
-                label="continent"
+                value={continent ? continent : ''}
+                onChange={(e) => setContinent(e.target.value)}
                 type="text"
-                {...register('continent')}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
-                label="longitude"
+                value={longitude ? longitude : ''}
+                onChange={(e) => setLongitude(e.target.value)}
                 type="text"
-                {...register('longitude')}
               ></TextField>
             </Grid>
             <Grid
@@ -245,9 +329,9 @@ function EditVenue() {
             >
               <TextField
                 sx={{ width: '50%' }}
-                label="latitude"
+                value={latitude ? latitude : ''}
+                onChange={(e) => setLatitude(e.target.value)}
                 type="text"
-                {...register('latitude')}
               ></TextField>
             </Grid>
           </Grid>
