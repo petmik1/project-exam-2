@@ -127,8 +127,7 @@ function Profile() {
                     {bookings.map((booking) => (
                       <Box
                         display={{ xs: 'block', md: 'flex' }}
-                        justifyContent={'space-between'}
-                        alignContent={'space-between'}
+                        justifyContent={'space-evenly'}
                         flexDirection={'row'}
                         key={booking.id}
                       >
@@ -229,8 +228,7 @@ function Profile() {
                     {venues.map((venue) => (
                       <Box
                         display={{ xs: 'block', md: 'flex' }}
-                        justifyContent={'space-between'}
-                        alignContent={'space-between'}
+                        justifyContent={'space-evenly'}
                         flexDirection={'row'}
                         key={venue.id}
                       >
@@ -249,9 +247,19 @@ function Profile() {
                           <Typography variant="h2" textAlign={{ md: 'center' }}>
                             {venue.name}
                           </Typography>
-                          <Link to={`/editVenue/${venue.id}`}>
-                            <Button variant="contained">Edit</Button>
-                          </Link>
+                          <Box
+                            display={'flex'}
+                            flexDirection={'column'}
+                            justifyContent={'space-evenly'}
+                            alignItems={'center'}
+                          >
+                            <Link to={`/editVenue/${venue.id}`}>
+                              <Button variant="contained" sx={{margin: '1rem 0'}}>Edit</Button>
+                            </Link>
+                            <Link to={`/venueList/${venue.id}`}>
+                              <Button variant="contained">view bookings</Button>
+                            </Link>
+                          </Box>
                         </Box>
                       </Box>
                     ))}

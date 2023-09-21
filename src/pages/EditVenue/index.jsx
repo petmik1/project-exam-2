@@ -59,7 +59,7 @@ function EditVenue() {
     },
   })
 
-  const { register, handleSubmit } = form
+  const { handleSubmit } = form
 
   const onsubmit = async () => {
     const data = {
@@ -140,16 +140,37 @@ function EditVenue() {
     setPets(event.target.checked)
   }
 
+  const deleteVenue = async () => {
+    await api.delete('/venues/' + id, {
+      headers: {
+        Authorization: `Bearer ${storage.load('user').accessToken}`,
+      },
+    })
+    try {
+      location.href = '/profile'
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <Box>
       <Typography variant="h1" textAlign={'center'}>
         Edit venue
       </Typography>
 
-      <Box maxWidth={'800px'} margin={'1rem auto'}>
+      <Box
+        maxWidth={'800px'}
+        margin={'1rem auto'}
+        display={'flex'}
+        justifyContent={'space-between'}
+      >
         <Typography variant="h2" textAlign={'left'}>
           General
         </Typography>
+        <Button variant="contained" color="error" onClick={deleteVenue}>
+          delete
+        </Button>
       </Box>
       <Box
         display={'flex'}

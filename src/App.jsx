@@ -7,6 +7,7 @@ import Register from './pages/Register'
 import Profile from './pages/Profile'
 import CreateVenue from './pages/CreateVenue'
 import EditVenue from './pages/EditVenue'
+import VenueList from './pages/venueList'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/profile" element={<Profile/>} />
           <Route path="/createVenue" element={<CreateVenue/>} />
           <Route path="/editVenue/:id" element={<EditVenue/>} />
+          <Route path="/venueList/:id" element={<VenueList/>} />
         </Route>
       </Routes>
     </>
