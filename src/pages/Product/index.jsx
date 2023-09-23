@@ -8,7 +8,6 @@ import {
   Slider,
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
-import dayjs from 'dayjs'
 import setTitle from '../../components/setTitle'
 import api from '../../data/apiBase'
 import { useEffect, useState } from 'react'
@@ -47,14 +46,6 @@ function Product() {
       return date.isBetween(range.start, range.end, null, '[]');
     });
   };
-
-  // const checkToDate = (test) => {
-  //   console.log(test)
-  //   if (to.isBefore(from)) {
-  //     console.log('to is before from')
-  //     setTo(null)
-  //   }
-  // }
 
   const { register, handleSubmit } = form
 
