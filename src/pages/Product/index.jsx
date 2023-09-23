@@ -19,28 +19,51 @@ import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb'
 import { useForm } from 'react-hook-form'
 import storage from '../../storage'
 
-const tomorrow = dayjs().add(1, 'day')
-const dayAfterTomorrow = dayjs().add(2, 'day')
-
 function Product() {
   const [venue, setVenue] = useState([])
-  // const [guest, setGuest] = useState(1)
+  const [from, setFrom] = useState(null)
+  const [to, setTo] = useState(null)
+  const [bookings, setBookings] = useState([])
   const { id } = useParams()
   const form = useForm({
     defaultValues: {
-      from: tomorrow,
-      to: dayAfterTomorrow,
+      from: '',
+      to: '',
       guests: Number(1),
     },
   })
+
+  const disabledDateRanges = []
+
+  bookings.forEach((booking) => {
+    disabledDateRanges.push({
+      start: booking.dateFrom,
+      end: booking.dateTo,
+    })
+  })
+ 
+  const shouldDisableDate = (date) => {
+    return disabledDateRanges.some((range) => {
+      return date.isBetween(range.start, range.end, null, '[]');
+    });
+  };
+
+  // const checkToDate = (test) => {
+  //   console.log(test)
+  //   if (to.isBefore(from)) {
+  //     console.log('to is before from')
+  //     setTo(null)
+  //   }
+  // }
 
   const { register, handleSubmit } = form
 
   useEffect(() => {
     const fetchVenue = async () => {
-      const response = await api.get('/venues/' + id)
+      const response = await api.get('/venues/' + id + '/?_bookings=true')
       try {
         setVenue(response.data)
+        setBookings(response.data.bookings)
       } catch (error) {
         console.log(error)
       }
@@ -50,18 +73,19 @@ function Product() {
 
   const createBooking = async (data) => {
     const booking = {
-      dateFrom: dayjs(data.from).format('YYYY-MM-DD'),
-      dateTo: dayjs(data.to).format('YYYY-MM-DD'),
+      dateFrom: from.toISOString(),
+      dateTo: to.toISOString(),
       venueId: id,
-      guests: Number(data.guests) ,
+      guests: Number(data.guests),
     }
+    const response = await api.post('/bookings', booking, {
+      headers: {
+        Authorization: `Bearer ${storage.load('user').accessToken}`,
+      },
+    })
+
     console.log(booking)
     try {
-      const response = await api.post('/bookings', booking, {
-        headers: {
-          Authorization: `Bearer ${storage.load('user').accessToken}`,
-        },
-      })
       console.log(response.data)
     } catch (error) {
       console.log(error)
@@ -101,7 +125,7 @@ function Product() {
             <List>
               <ListItemText primary={'price: $' + venue.price} />
               <ListItemText primary={'max guests: ' + venue.maxGuests} />
-              <ListItemText primary={'rating: ' + venue.rating + '/10'} />
+              <ListItemText primary={'rating: ' + venue.rating + '/5'} />
               <ListItemText primary={'location: ' + location.city} />
               <Typography variant="body1" color="initial">
                 {venue.description}
@@ -151,14 +175,24 @@ function Product() {
             flexDirection={'column'}
           >
             <Typography variant="h2">from</Typography>
-            <DatePicker defaultValue={tomorrow} {...register('from')} />
+            <DatePicker
+              value={from}
+              disablePast
+              shouldDisableDate={shouldDisableDate}
+              onChange={(e) => setFrom(e)}
+            />
             <Typography variant="h2">to</Typography>
-            <DatePicker defaultValue={dayAfterTomorrow} {...register('to')} />
+            <DatePicker
+              value={to}
+              disablePast
+              minDate={from}
+              shouldDisableDate={shouldDisableDate}
+              onChange={(e) => setTo(e)}
+            />
             <Typography variant="h2">guests</Typography>
             <Slider
               aria-label="guests"
               defaultValue={1}
-              // onChange={(e) => setGuest(e.target.value)}
               {...register('guests')}
               valueLabelDisplay="auto"
               step={1}
