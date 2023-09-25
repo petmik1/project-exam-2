@@ -66,7 +66,7 @@ function Login() {
             type="password"
             {...register('password')}
           ></TextField>
-          <Link color="primary" href="/register">
+          <Link data-testId="register-link" color="primary" href="/register">
             Dont have a user? Register here.
           </Link>
           <Button variant="contained" type="submit">
