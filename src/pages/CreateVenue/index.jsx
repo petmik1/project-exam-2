@@ -35,13 +35,16 @@ const validationSchema = yup.object().shape({
   parking: yup.boolean(),
   breakfast: yup.boolean(),
   pets: yup.boolean(),
-  address: yup.string().required('Address is required'),
-  city: yup.string().required('City is required'),
-  zip: yup.string().required('ZIP code is required'),
-  country: yup.string().required('Country is required'),
-  continent: yup.string().required('Continent is required'),
-  longitude: yup.string().required('Longitude is required'),
-  latitude: yup.string().required('Latitude is required'),
+  location: yup.object().shape({
+    address: yup.string().required('Address is required'),
+    city: yup.string().required('City is required'),
+    zip: yup.string().required('ZIP code is required'),
+    country: yup.string().required('Country is required'),
+    continent: yup.string().required('Continent is required'),
+    longitude: yup.string().required('Longitude is required'),
+    latitude: yup.string().required('Latitude is required'),
+  }),
+  media: yup.array().of(yup.string().required('Media is required')),
 })
 
 function CreateVenue() {
@@ -93,6 +96,8 @@ function CreateVenue() {
       console.log(error)
     }
   }
+
+  console.log(errors.location?.address)
 
   return (
     <Box>
@@ -249,18 +254,21 @@ function CreateVenue() {
                 label="address"
                 type="text"
                 {...register('location.address')}
-                error={!!errors.address}
-                helperText={errors.address?.message}
+                error={!!errors.location?.address}
               ></TextField>
+              <Typography variant="error" color="initial">
+                {errors.location?.address?.message}
+              </Typography>
+              
             </Grid>
-            <Grid item xs={12} md={6}>
+            {/* <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
                 label="city"
                 type="text"
                 {...register('location.city')}
-                error={!!errors.city}
-                helperText={errors.city?.message}
+                error={!!errors.location?.city}
+                helperText={errors.location?.city.message}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -269,8 +277,8 @@ function CreateVenue() {
                 label="zip"
                 type="text"
                 {...register('location.zip')}
-                error={!!errors.zip}
-                helperText={errors.zip?.message}
+                error={!!errors.location?.zip}
+                helperText={errors.location?.zip.message}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -279,8 +287,8 @@ function CreateVenue() {
                 label="country"
                 type="text"
                 {...register('location.country')}
-                error={!!errors.country}
-                helperText={errors.country?.message}
+                error={!!errors.location?.address}
+                helperText={errors.location?.address.message}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -289,8 +297,8 @@ function CreateVenue() {
                 label="continent"
                 type="text"
                 {...register('location.continent')}
-                error={!!errors.continent}
-                helperText={errors.continent?.message}
+                error={!!errors.location?.continent}
+                helperText={errors.location?.continent.message}
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -299,8 +307,8 @@ function CreateVenue() {
                 label="longitude"
                 type="text"
                 {...register('location.longitude')}
-                error={!!errors.longitude}
-                helperText={errors.longitude?.message}
+                error={!!errors.location?.longitude}
+                helperText={errors.location?.longitude.message}
               ></TextField>
             </Grid>
             <Grid
@@ -315,10 +323,10 @@ function CreateVenue() {
                 label="latitude"
                 type="text"
                 {...register('location.latitude')}
-                error={!!errors.latitude}
-                helperText={errors.latitude?.message}
+                error={!!errors.location?.latitude}
+                helperText={errors.location?.latitude.message}
               ></TextField>
-            </Grid>
+            </Grid> */}
           </Grid>
 
           <Button type="submit" variant="contained" sx={{ marginTop: '1rem' }}>
