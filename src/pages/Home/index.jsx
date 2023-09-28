@@ -1,4 +1,10 @@
-import { Box, Paper, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  CircularProgress,
+  Paper,
+  TextField,
+  Typography,
+} from '@mui/material'
 import Grid from '@mui/material/Grid'
 import setTitle from '../../components/setTitle'
 import api from '../../data/apiBase'
@@ -9,21 +15,28 @@ import { Link } from 'react-router-dom'
 function Home() {
   const [venues, setVenues] = useState([])
   const [search, setSearch] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('')
+
   setTitle('Home')
 
   useEffect(() => {
     const fetchVenues = async () => {
-      const response = await api.get('/venues')
       try {
+        const response = await api.get('venes')
         setVenues(response.data)
       } catch (error) {
+        setErrorMessage(error.toJSON().message)
         console.log(error)
+      } finally {
+        setIsLoading(false)
       }
     }
     fetchVenues()
-  }, [])
+  }, [isLoading])
 
-  console.log(venues)
+  console.log(isLoading)
+
   return (
     <Box p="2rem" display={'flex'} flexDirection={'column'}>
       <Box margin={'0 auto'} pb={'2rem'}>
@@ -39,6 +52,14 @@ function Home() {
         />
       </Box>
 
+      <Box
+        display={isLoading ? 'flex' : 'none'}
+        justifyContent={'center'}
+        alignItems={'center'}
+      >
+        <CircularProgress></CircularProgress>
+      </Box>
+
       <Grid
         container
         spacing={2}
@@ -46,6 +67,14 @@ function Home() {
         alignContent={'center'}
         height={'100%'}
       >
+        {errorMessage && (
+          <Box textAlign={'center'}>
+            <Typography variant="h2" color="initial">
+              somthing went wrong
+            </Typography>
+            <Typography>{errorMessage}</Typography>
+          </Box>
+        )}
         {venues
           .filter((venue) => {
             if (search === '') {
@@ -58,9 +87,10 @@ function Home() {
               venue.location.city.toLowerCase().includes(search.toLowerCase())
             ) {
               return venue
-            } 
-            else if (
-              venue.location.address.toLowerCase().includes(search.toLowerCase())
+            } else if (
+              venue.location.address
+                .toLowerCase()
+                .includes(search.toLowerCase())
             ) {
               return venue
             }
