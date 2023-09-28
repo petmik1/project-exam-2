@@ -31,18 +31,11 @@ const validationSchema = yup.object().shape({
     .positive('Price must be a positive number')
     .required('Price is required'),
   description: yup.string().required('Description is required'),
-  wifi: yup.boolean(),
-  parking: yup.boolean(),
-  breakfast: yup.boolean(),
-  pets: yup.boolean(),
   location: yup.object().shape({
     address: yup.string().required('Address is required'),
     city: yup.string().required('City is required'),
     zip: yup.string().required('ZIP code is required'),
     country: yup.string().required('Country is required'),
-    continent: yup.string().required('Continent is required'),
-    longitude: yup.string().required('Longitude is required'),
-    latitude: yup.string().required('Latitude is required'),
   }),
   media: yup.array().of(yup.string().required('Media is required')),
 })
@@ -50,6 +43,7 @@ const validationSchema = yup.object().shape({
 function CreateVenue() {
   setTitle('Create venue')
   const form = useForm({
+    resolver: yupResolver(validationSchema),
     defaultValues: {
       name: '',
       media: [''],
@@ -58,10 +52,10 @@ function CreateVenue() {
       price: Number(),
       description: '',
       meta: {
-        wifi: '',
-        parking: '',
-        breakfast: '',
-        pets: '',
+        wifi: false,
+        parking: false,
+        breakfast: false,
+        pets: false,
       },
       location: {
         address: '',
@@ -73,7 +67,6 @@ function CreateVenue() {
         latitude: '',
       },
     },
-    resolver: yupResolver(validationSchema),
   })
 
   const {
@@ -83,7 +76,7 @@ function CreateVenue() {
   } = form
   const [user] = useState(storage.load('user'))
 
-  const onsubmit = async (data) => {
+  const onSubmit = async (data) => {
     console.log(data)
     const response = await api.post('/venues', data, {
       headers: {
@@ -96,8 +89,6 @@ function CreateVenue() {
       console.log(error)
     }
   }
-
-  console.log(errors.location?.address)
 
   return (
     <Box>
@@ -118,7 +109,7 @@ function CreateVenue() {
       >
         <Box
           component="form"
-          onSubmit={handleSubmit(onsubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           display={'flex'}
           flexDirection={'column'}
           maxWidth={'800px'}
@@ -169,7 +160,6 @@ function CreateVenue() {
                 sx={{ width: '100%' }}
                 label="price"
                 type="number"
-                inputProps={{ min: 0 }}
                 {...register('price', { valueAsNumber: true })}
                 error={!!errors.price}
                 helperText={errors.price?.message}
@@ -222,31 +212,29 @@ function CreateVenue() {
                 {...register('meta.wifi')}
                 control={<Switch />}
                 label="Wifi"
-                error={!!errors.wifi}
-                helperText={errors.wifi?.message}
+
               />
               <FormControlLabel
                 {...register('meta.parking')}
                 control={<Switch />}
                 label="Parking"
-                error={!!errors.parking}
-                helperText={errors.parking?.message}
               />
 
               <FormControlLabel
                 {...register('meta.breakfast')}
                 control={<Switch />}
                 label="Breakfast"
-                error={!!errors.breakfast}
-                helperText={errors.breakfast?.message}
               />
               <FormControlLabel
                 {...register('meta.pets')}
                 control={<Switch />}
                 label="Pets"
-                error={!!errors.pets}
-                helperText={errors.pets?.message}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h2" color="initial">
+                location
+              </Typography>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
@@ -255,20 +243,23 @@ function CreateVenue() {
                 type="text"
                 {...register('location.address')}
                 error={!!errors.location?.address}
+                helperText={
+                  errors.location?.address
+                    ? errors.location?.address.message
+                    : ''
+                }
               ></TextField>
-              <Typography variant="error" color="initial">
-                {errors.location?.address?.message}
-              </Typography>
-              
             </Grid>
-            {/* <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6}>
               <TextField
                 sx={{ width: '100%' }}
                 label="city"
                 type="text"
                 {...register('location.city')}
                 error={!!errors.location?.city}
-                helperText={errors.location?.city.message}
+                helperText={
+                  errors.location?.city ? errors.location?.city.message : ''
+                }
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -278,7 +269,9 @@ function CreateVenue() {
                 type="text"
                 {...register('location.zip')}
                 error={!!errors.location?.zip}
-                helperText={errors.location?.zip.message}
+                helperText={
+                  errors.location?.zip ? errors.location?.zip.message : ''
+                }
               ></TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -288,45 +281,13 @@ function CreateVenue() {
                 type="text"
                 {...register('location.country')}
                 error={!!errors.location?.address}
-                helperText={errors.location?.address.message}
+                helperText={
+                  errors.location?.country
+                    ? errors.location?.country.message
+                    : ''
+                }
               ></TextField>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                sx={{ width: '100%' }}
-                label="continent"
-                type="text"
-                {...register('location.continent')}
-                error={!!errors.location?.continent}
-                helperText={errors.location?.continent.message}
-              ></TextField>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                sx={{ width: '100%' }}
-                label="longitude"
-                type="text"
-                {...register('location.longitude')}
-                error={!!errors.location?.longitude}
-                helperText={errors.location?.longitude.message}
-              ></TextField>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              display={'flex'}
-              justifyContent={'center'}
-              alignItems={'center'}
-            >
-              <TextField
-                sx={{ width: '50%' }}
-                label="latitude"
-                type="text"
-                {...register('location.latitude')}
-                error={!!errors.location?.latitude}
-                helperText={errors.location?.latitude.message}
-              ></TextField>
-            </Grid> */}
           </Grid>
 
           <Button type="submit" variant="contained" sx={{ marginTop: '1rem' }}>
