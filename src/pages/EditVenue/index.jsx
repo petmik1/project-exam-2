@@ -87,8 +87,6 @@ function EditVenue() {
       }
     },
   })
-
-  console.log(wifi)
   
   const {
     register,
