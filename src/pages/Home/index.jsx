@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 function Home() {
   const [venues, setVenues] = useState([])
   const [search, setSearch] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
 
   setTitle('Home')
@@ -23,19 +23,18 @@ function Home() {
   useEffect(() => {
     const fetchVenues = async () => {
       try {
-        const response = await api.get('venes')
+        const response = await api.get('venues/?sort=created&sortOrder=desc')
         setVenues(response.data)
+        console.log(response.data)
       } catch (error) {
         setErrorMessage(error.toJSON().message)
-        console.log(error)
       } finally {
-        setIsLoading(false)
+        setLoading(false)
       }
     }
     fetchVenues()
-  }, [isLoading])
+  }, [loading])
 
-  console.log(isLoading)
 
   return (
     <Box p="2rem" display={'flex'} flexDirection={'column'}>
@@ -53,7 +52,7 @@ function Home() {
       </Box>
 
       <Box
-        display={isLoading ? 'flex' : 'none'}
+        display={loading ? 'flex' : 'none'}
         justifyContent={'center'}
         alignItems={'center'}
       >
@@ -70,7 +69,7 @@ function Home() {
         {errorMessage && (
           <Box textAlign={'center'}>
             <Typography variant="h2" color="initial">
-              somthing went wrong
+              something went wrong
             </Typography>
             <Typography>{errorMessage}</Typography>
           </Box>
@@ -102,10 +101,11 @@ function Home() {
                   to={`/product/${venue.id}`}
                   style={{ textDecoration: 'none' }}
                 >
-                  <Paper variant="secondary">
-                    <img
+                  <Paper variant="secondary" sx={{height:'270px'}}>
+                    <Box
+                      component={'img'}
                       src={venue.media}
-                      style={{ maxHeight: '200px', minHeight: '200px' }}
+                      sx={{ height: '200px', width: '100%' }}
                       alt=""
                     />
                     <Box
