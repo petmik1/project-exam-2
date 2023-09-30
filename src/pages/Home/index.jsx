@@ -12,6 +12,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+
 function Home() {
   const [venues, setVenues] = useState([])
   const [search, setSearch] = useState('')
@@ -38,6 +39,7 @@ function Home() {
 
   return (
     <Box p="2rem" display={'flex'} flexDirection={'column'}>
+      
       <Box margin={'0 auto'} pb={'2rem'}>
         <TextField
           id="outlined-basic"

@@ -6,6 +6,8 @@ import {
   FormControlLabel,
   Switch,
   Grid,
+  Alert,
+  CircularProgress,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import setTitle from '../../components/setTitle'
@@ -41,6 +43,10 @@ const validationSchema = yup.object().shape({
 })
 
 function CreateVenue() {
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [success, setSuccess] = useState(false)
+
   setTitle('Create venue')
   const form = useForm({
     resolver: yupResolver(validationSchema),
@@ -68,7 +74,6 @@ function CreateVenue() {
       },
     },
   })
-  
 
   const {
     register,
@@ -79,15 +84,21 @@ function CreateVenue() {
 
   const onSubmit = async (data) => {
     console.log(data)
-    const response = await api.post('/venues', data, {
-      headers: {
-        Authorization: `Bearer ${user.accessToken}`,
-      },
-    })
+
     try {
+      setLoading(true)
+      const response = await api.post('/venues', data, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      })
+      setSuccess(true)
       console.log(response)
     } catch (error) {
+      setErrorMessage(error.toJSON().message)
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -97,6 +108,24 @@ function CreateVenue() {
         Create venue
       </Typography>
 
+      <Box maxWidth={'800px'} margin={'1rem auto'}>
+        <Alert
+          severity="error"
+          sx={{ display: errorMessage ? 'flex' : 'none' }}
+        >
+          {errorMessage}
+        </Alert>
+        <Alert
+          severity="success"
+          sx={{ display: success ? 'flex' : 'none', margin: '0 auto' }}
+        >
+          Venue created
+        </Alert>
+      </Box>
+
+      <CircularProgress
+        sx={{ display: loading ? 'block' : 'none', margin: '0 auto' }}
+      ></CircularProgress>
       <Box maxWidth={'800px'} margin={'1rem auto'}>
         <Typography variant="h2" textAlign={'left'}>
           General
@@ -213,7 +242,6 @@ function CreateVenue() {
                 {...register('meta.wifi')}
                 control={<Switch />}
                 label="Wifi"
-
               />
               <FormControlLabel
                 {...register('meta.parking')}
