@@ -15,7 +15,7 @@ function Header() {
   function Logout() {
     storage.remove('user')
     setUser(null)
-    location.reload('/')
+    location.href = '/'
   }
 
   if (storage.user) {
