@@ -1,5 +1,5 @@
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, Alert, CircularProgress, AlertTitle } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 import TextField from '@mui/material/TextField'
 import { useForm } from 'react-hook-form'
@@ -10,9 +10,10 @@ import api from '../../data/apiBase'
 
 function ProfilePicture() {
   const [open, setOpen] = useState(false)
-  const [user, setUser] = useState(storage.load('user'))
+  const user = storage.load('user')
   const avatar = storage.load('avatar')
-
+  const [errorMessage, setErrorMessage] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleClickOpen = () => {
     if (open === false) {
@@ -30,11 +31,10 @@ function ProfilePicture() {
   const { register, handleSubmit } = form
 
   const onsubmit = async (data) => {
-    console.log(data)
-    console.log(user)
-
+    try {
+      setLoading(true)
       const response = await api.put(
-        '/profiles/' + user.name + '/media',
+        'profiles/' + user.name + '/media',
         data,
         {
           headers: {
@@ -42,20 +42,27 @@ function ProfilePicture() {
           },
         }
       )
-      console.log(response)
-      try {
-        setOpen(false)
-        storage.save('avatar', response.data.avatar)
-        console.log(response.data.avatar)
-        setUser(response.data)
-      } catch (error) {
-        console.log(error)
-      }
-    
-    
+      storage.save('avatar', response.data.avatar)      
+    } catch (error) {
+      setErrorMessage(error.toJSON().message)
+    } finally {
+      setLoading(false)
+    }
   }
   return (
     <Box>
+      <Box maxWidth={'800px'} margin={'1rem auto'}>
+        <Alert
+          severity="error"
+          sx={{ display: errorMessage ? 'flex' : 'none' }}
+        >
+          <AlertTitle sx={{ fontWeight: 'bold' }}>Profile picture update error</AlertTitle>
+          {errorMessage}
+        </Alert>
+        <CircularProgress
+          sx={{ margin: '0 auto', display: loading ? 'block' : 'none' }}
+        />
+      </Box>
       <Box
         display={'flex'}
         flexDirection={'column'}
@@ -64,15 +71,15 @@ function ProfilePicture() {
         mt={'2rem'}
       >
         <Box
-          display={avatar && user.avatar ? 'flex' : 'none'}
+          display={avatar ? 'flex' : 'none'}
           component={'img'}
-          src= {user.avatar}
+          src={avatar}
           sx={{
             width: '150px',
             height: '150px',
             border: '3px solid',
             borderColor: 'primary.main',
-            borderRadius: '100%',            
+            borderRadius: '100%',
           }}
         ></Box>
         <PermIdentityOutlinedIcon
@@ -82,7 +89,7 @@ function ProfilePicture() {
             border: '3px solid',
             borderColor: 'primary.main',
             borderRadius: '100%',
-            display: user.avatar ? 'none' : 'flex',
+            display: avatar ? 'none' : 'flex',
           }}
         />
         <SettingsIcon sx={{ marginLeft: '6rem' }} onClick={handleClickOpen} />

@@ -1,24 +1,38 @@
-import { TextField, Button, Stack, Link, Typography } from '@mui/material'
+import {
+  TextField,
+  Button,
+  Stack,
+  Link,
+  Typography,
+  Alert,
+  AlertTitle,
+  CircularProgress,
+  Box,
+} from '@mui/material'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import setTitle from '../../components/setTitle'
 import api from '../../data/apiBase'
 import storage from '../../storage'
-
-const schema = yup.object().shape({
-  email: yup
-    .string()
-    .required('Email is required')
-    .email('Invalid email')
-    .matches(
-      '^[a-zA-Z0-9._%+-]+@(noroff.no|stud.noroff.no)$',
-      'The Email has to be a Noroff email address'
-    ),
-  password: yup.string().required('Password is required'),
-})
+import { useState } from 'react'
 
 function Login() {
+  const schema = yup.object().shape({
+    email: yup
+      .string()
+      .required('Email is required')
+      .email('Invalid email')
+      .matches(
+        '^[a-zA-Z0-9._%+-]+@(noroff.no|stud.noroff.no)$',
+        'The Email has to be a Noroff email address'
+      ),
+    password: yup.string().required('Password is required'),
+  })
+
+  const [errorMessage, setErrorMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+
   setTitle('Login')
   const form = useForm({
     defaultValues: {
@@ -36,18 +50,15 @@ function Login() {
 
   const onsubmit = async (data) => {
     try {
+      setLoading(true)
       const response = await api.post('/auth/login', data)
       storage.save('user', response.data)
       storage.save('avatar', response.data.avatar)
       location.href = '/'
     } catch (error) {
-      if (error.response) {
-        console.log(error.response.data.errors[0].message)
-      } else if (error.request) {
-        console.log(error.request)
-      } else {
-        console.log('Error', error.message)
-      }
+      setErrorMessage(error.toJSON().message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -56,6 +67,16 @@ function Login() {
       <Typography variant="h1" textAlign={'center'} mt="2rem">
         Login
       </Typography>
+      <Box maxWidth={'800px'} margin={'1rem auto'}>
+        <Alert severity="error" sx={{display: errorMessage ? 'flex' : 'none' }}>
+          <AlertTitle sx={{ fontWeight: 'bold' }}>login error</AlertTitle>
+          {errorMessage}
+        </Alert>
+        <CircularProgress
+          sx={{ margin: '0 auto', display: loading ? 'block' : 'none' }}
+        />
+      </Box>
+
       <form
         onSubmit={handleSubmit(onsubmit)}
         style={{

@@ -7,12 +7,16 @@ import {
   Typography,
   Switch,
   FormControlLabel,
+  Alert,
+  AlertTitle,
+  CircularProgress,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import setTitle from '../../components/setTitle'
 import api from '../../data/apiBase'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react'
 
 const schema = yup.object().shape({
   email: yup.string().required('Email is required').email('Invalid email'),
@@ -23,7 +27,11 @@ const schema = yup.object().shape({
 })
 
 function Register() {
+  const [errorMessage, setErrorMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+
   setTitle('Register')
+
   const form = useForm({
     defaultValues: {
       email: '',
@@ -42,37 +50,39 @@ function Register() {
   } = form
   const onsubmit = async (data) => {
     try {
+      setLoading(true)
       await api.post('/auth/register', data)
       location.href = '/login'
     } catch (error) {
-      if (error.response) {
-        console.log(error.response.data.errors[0].message)
-      } else if (error.request) {
-        console.log(error.request)
-      } else {
-        console.log('Error', error.message)
-      }
+      setErrorMessage(error.toJSON().message)
+    } finally {
+      setLoading(false)
     }
-
-    register()
   }
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(onsubmit)}
-      display={'flex'}
-      flexDirection={'column'}
-      alignItems={'center'}
-      marginTop={'2rem'}
-      noValidate
-    >
-      <Typography variant="h1">Register</Typography>
+    <Box component="form" onSubmit={handleSubmit(onsubmit)}>
+      <Typography variant="h1" textAlign="center" mt={'1rem'} >
+        Register
+      </Typography>
+      <Box margin={'1rem auto'} maxWidth={'800px'}>
+        <Alert
+          severity="error"
+          sx={{ display: errorMessage ? 'flex' : 'none' }}
+        >
+          <AlertTitle sx={{ fontWeight: 'bold' }}>Register error</AlertTitle>
+          {errorMessage}
+        </Alert>
+        <CircularProgress
+          sx={{ margin: '0 auto', display: loading ? 'block' : 'none' }}
+        />
+      </Box>
       <Grid
         container
         spacing={2}
         justifyContent={'center'}
         align={'center'}
+        margin={'0 auto'}
         sx={{
           maxWidth: '500px',
           mt: '2rem',

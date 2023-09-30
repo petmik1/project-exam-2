@@ -6,6 +6,9 @@ import {
   FormControlLabel,
   Switch,
   Grid,
+  Alert,
+  CircularProgress,
+  AlertTitle,
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import setTitle from '../../components/setTitle'
@@ -15,7 +18,6 @@ import { useState } from 'react'
 import storage from '../../storage'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-
 
 function EditVenue() {
   setTitle('Edit venue')
@@ -32,10 +34,10 @@ function EditVenue() {
     price: yup.number().positive('Price must be a positive number'),
     description: yup.string(),
     meta: yup.object().shape({
-    wifi: yup.boolean(),
-    parking: yup.boolean(),
-    breakfast: yup.boolean(),
-    pets: yup.boolean(),
+      wifi: yup.boolean(),
+      parking: yup.boolean(),
+      breakfast: yup.boolean(),
+      pets: yup.boolean(),
     }),
     location: yup.object().shape({
       address: yup.string(),
@@ -50,7 +52,10 @@ function EditVenue() {
   const [parking, setParking] = useState(false)
   const [breakfast, setBreakfast] = useState(false)
   const [pets, setPets] = useState(false)
-
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [errorMessageDelete, setErrorMessageDelete] = useState('')
 
   const form = useForm({
     resolver: yupResolver(validationSchema),
@@ -61,7 +66,6 @@ function EditVenue() {
         setParking(response.data.meta.parking)
         setBreakfast(response.data.meta.breakfast)
         setPets(response.data.meta.pets)
-
         return {
           name: response.data.name,
           media: response.data.media,
@@ -87,7 +91,7 @@ function EditVenue() {
       }
     },
   })
-  
+
   const {
     register,
     handleSubmit,
@@ -95,15 +99,20 @@ function EditVenue() {
   } = form
 
   const onsubmit = async (data) => {
-    const response = await api.put('/venues/' + id, data, {
-      headers: {
-        Authorization: `Bearer ${storage.load('user').accessToken}`,
-      },
-    })
     try {
-      console.log(response)
+      setLoading(true)
+      const response = await api.put('/venues/' + id, data, {
+        headers: {
+          Authorization: `Bearer ${storage.load('user').accessToken}`,
+        },
+      })
+      if (200 <= response.status && response.status < 300) {
+        setSuccess(true)
+      }
     } catch (error) {
-      console.log(error)
+      setErrorMessage(error.toJSON().message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -121,15 +130,18 @@ function EditVenue() {
   }
 
   const deleteVenue = async () => {
-    await api.delete('/venues/' + id, {
-      headers: {
-        Authorization: `Bearer ${storage.load('user').accessToken}`,
-      },
-    })
     try {
+      setLoading(true)
+      await api.delete('/venues/' + id, {
+        headers: {
+          Authorization: `Bearer ${storage.load('user').accessToken}`,
+        },
+      })
       location.href = '/profile'
     } catch (error) {
-      console.log(error)
+      setErrorMessageDelete(error.toJSON().message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -138,6 +150,31 @@ function EditVenue() {
       <Typography variant="h1" textAlign={'center'}>
         Edit venue
       </Typography>
+      <Box maxWidth={'800px'} margin={'1rem auto'}>
+        <Alert
+          severity="error"
+          sx={{ display: errorMessage ? 'flex' : 'none' }}
+        >
+          {errorMessage}
+        </Alert>
+        <Alert
+          severity="success"
+          sx={{ display: success ? 'flex' : 'none', margin: '0 auto' }}
+        >
+          Venue has been edited
+        </Alert>
+        <Alert
+          severity="error"
+          sx={{ display: errorMessageDelete ? 'flex' : 'none' }}
+        >
+          <AlertTitle sx={{fontWeight:'bold'}} >Not able to delete</AlertTitle>
+          {errorMessageDelete}
+        </Alert>
+      </Box>
+
+      <CircularProgress
+        sx={{ display: loading ? 'block' : 'none', margin: '0 auto' }}
+      ></CircularProgress>
 
       <Box
         maxWidth={'800px'}
@@ -295,7 +332,6 @@ function EditVenue() {
                 label="Wifi"
                 labelPlacement="start"
                 {...register('meta.wifi')}
-                
               />
               {errors.wifi && (
                 <Typography variant="body1" color="error">

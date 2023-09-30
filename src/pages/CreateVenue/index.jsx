@@ -17,32 +17,32 @@ import storage from '../../storage'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-const validationSchema = yup.object().shape({
-  name: yup.string().required('Name is required'),
-  maxGuests: yup
-    .number()
-    .positive('Max Guests must be a positive number')
-    .required('Max Guests is required'),
-  rating: yup
-    .number()
-    .min(0, 'Rating must be at least 1')
-    .max(5, 'Rating must be at most 5')
-    .required('Rating is required'),
-  price: yup
-    .number()
-    .positive('Price must be a positive number')
-    .required('Price is required'),
-  description: yup.string().required('Description is required'),
-  location: yup.object().shape({
-    address: yup.string().required('Address is required'),
-    city: yup.string().required('City is required'),
-    zip: yup.string().required('ZIP code is required'),
-    country: yup.string().required('Country is required'),
-  }),
-  media: yup.array().of(yup.string().required('Media is required')),
-})
-
 function CreateVenue() {
+  const validationSchema = yup.object().shape({
+    name: yup.string().required('Name is required'),
+    maxGuests: yup
+      .number()
+      .positive('Max Guests must be a positive number')
+      .required('Max Guests is required'),
+    rating: yup
+      .number()
+      .min(0, 'Rating must be at least 1')
+      .max(5, 'Rating must be at most 5')
+      .required('Rating is required'),
+    price: yup
+      .number()
+      .positive('Price must be a positive number')
+      .required('Price is required'),
+    description: yup.string().required('Description is required'),
+    location: yup.object().shape({
+      address: yup.string().required('Address is required'),
+      city: yup.string().required('City is required'),
+      zip: yup.string().required('ZIP code is required'),
+      country: yup.string().required('Country is required'),
+    }),
+    media: yup.array().of(yup.string().required('Media is required')),
+  })
+
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [success, setSuccess] = useState(false)
@@ -92,8 +92,8 @@ function CreateVenue() {
           Authorization: `Bearer ${user.accessToken}`,
         },
       })
+      console.log(response.data)
       setSuccess(true)
-      console.log(response)
     } catch (error) {
       setErrorMessage(error.toJSON().message)
       console.log(error)
@@ -115,6 +115,7 @@ function CreateVenue() {
         >
           {errorMessage}
         </Alert>
+
         <Alert
           severity="success"
           sx={{ display: success ? 'flex' : 'none', margin: '0 auto' }}

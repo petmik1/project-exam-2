@@ -6,7 +6,7 @@ import TabPanel from '@mui/lab/TabPanel'
 import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import ProfilePicture from '../../components/profilePicture'
+import ProfilePicture from '../../components/ProfilePicture'
 import setTitle from '../../components/setTitle'
 import storage from '../../storage'
 import api from '../../data/apiBase'
@@ -17,6 +17,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import './styles.css'
+import { Alert, AlertTitle, CircularProgress } from '@mui/material'
 
 function Profile() {
   setTitle('Profile')
@@ -25,42 +26,54 @@ function Profile() {
   const [venues, setVenues] = useState([])
   const [user] = useState(storage.load('user'))
   const [activeStep, setActiveStep] = useState(0)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [errorType, setErrorType] = useState('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const response = await api.get(
-        '/profiles/' + user.name + '/bookings' + '?_venue=true',
-        {
-          headers: {
-            Authorization: `Bearer ${user.accessToken}`,
-          },
-        }
-      )
-
       try {
+        console.log(user)
+        setLoading(true)
+        const response = await api.get(
+          '/profiles/' + user.name + '/bookings' + '?_venue=true',
+          {
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+            },
+          }
+        )
         setBookings(response.data)
       } catch (error) {
+        setErrorMessage(error.toJSON().message)
+        setErrorType('Fetch bookings failed')
         console.log(error)
+      } finally {
+        setLoading(false)
       }
     }
     fetchBookings()
     if (user.venueManager) {
       const fetchVenues = async () => {
-        const response = await api.get('/profiles/' + user.name + '/venues', {
-          headers: {
-            Authorization: `Bearer ${user.accessToken}`,
-          },
-        })
-
         try {
+          setLoading(true)
+          const response = await api.get('/profiles/' + user.name + '/venues', {
+            headers: {
+              Authorization: `Bearer ${user.accessToken}`,
+            },
+          })
           setVenues(response.data)
         } catch (error) {
-          console.log(error)
+          setErrorMessage(error.toJSON().message)
+          setErrorType('Fetch venues failed')
+        }
+        finally {
+          setLoading(false)
         }
       }
       fetchVenues()
     }
-  }, [user.accessToken, user.name, user.venueManager])
+  }, [user, user.accessToken, user.name, user.venueManager])
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -69,6 +82,18 @@ function Profile() {
 
   return (
     <>
+      <Box maxWidth={'800px'} margin={'1rem auto'}>
+        <Alert
+          severity="error"
+          sx={{ display: errorMessage ? 'flex' : 'none' }}
+        >
+          <AlertTitle sx={{ fontWeight: 'bold' }}>{errorType}</AlertTitle>
+          {errorMessage}
+        </Alert>
+        <CircularProgress
+          sx={{ margin: '0 auto', display: loading ? 'block' : 'none' }}
+        />
+      </Box>
       {<ProfilePicture />}
 
       <Box display={'flex'} justifyContent={'center'}>
