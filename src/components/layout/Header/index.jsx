@@ -4,6 +4,8 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity'
 import { useState } from 'react'
 import storage from '../../../storage'
 import { NavLink } from 'react-router-dom'
+import './styles.css'
+
 
 function Header() {
   const [navBarOpen, setNavBarOpen] = useState(false)
@@ -70,10 +72,10 @@ function Header() {
           </Box>
           <Box component={NavLink} display={user ? 'flex' : 'none' } p={'0 1rem'} justifyContent={'center'} alignItems={'center'} to="/profile">
             <Typography color={{xs:'text.secondary', md:'text.primary'}}>profile</Typography>
-            <PermIdentityIcon sx={{xs:'text.secondary', md:'text.primary'}}/>
+            <PermIdentityIcon sx={{color:{xs:'common.white', md:'common.black'}}} />
           </Box>
-          <Box component={NavLink} display={user ? 'block' : 'none' } p={'0 1rem'} onClick={Logout}>
-            <Typography color={{xs:'text.secondary', md:'text.primary'}}>logout</Typography>
+          <Box component={NavLink} sx={{textDecoration:'none'}} display={user ? 'block' : 'none' } p={'0 1rem'} onClick={Logout}>
+            <Typography textAlign={'center'} color={{xs:'text.secondary', md:'text.primary'}}>logout</Typography>
           </Box>
         </Box>
       </Toolbar>
