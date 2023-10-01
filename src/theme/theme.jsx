@@ -15,6 +15,7 @@ const theme = createTheme({
     },
     common: {
       black: text,
+      white: white,
     },
     primary: {
       main: primary,

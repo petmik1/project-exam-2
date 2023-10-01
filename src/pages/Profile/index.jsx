@@ -18,6 +18,7 @@ import 'swiper/css/pagination'
 import { Pagination } from 'swiper/modules'
 import './styles.css'
 import { Alert, AlertTitle, CircularProgress } from '@mui/material'
+import dayjs from 'dayjs'
 
 function Profile() {
   setTitle('Profile')
@@ -33,7 +34,6 @@ function Profile() {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        console.log(user)
         setLoading(true)
         const response = await api.get(
           '/profiles/' + user.name + '/bookings' + '?_venue=true',
@@ -47,7 +47,6 @@ function Profile() {
       } catch (error) {
         setErrorMessage(error.toJSON().message)
         setErrorType('Fetch bookings failed')
-        console.log(error)
       } finally {
         setLoading(false)
       }
@@ -66,8 +65,7 @@ function Profile() {
         } catch (error) {
           setErrorMessage(error.toJSON().message)
           setErrorType('Fetch venues failed')
-        }
-        finally {
+        } finally {
           setLoading(false)
         }
       }
@@ -96,7 +94,7 @@ function Profile() {
       </Box>
       {<ProfilePicture />}
 
-      <Box display={'flex'} justifyContent={'center'}>
+      <Box display={'flex'} justifyContent={'center'} mt={'2rem'}>
         <Box maxWidth={'650px'} width={'100%'}>
           <TabContext value={value}>
             <Box pl={'1rem'}>
@@ -118,7 +116,6 @@ function Profile() {
                 border: 3,
                 borderColor: 'primary.main',
                 borderRadius: '10px',
-                minHeight: '400px',
               }}
             >
               <Box
@@ -143,27 +140,49 @@ function Profile() {
                           flexDirection={'row'}
                           key={booking.id}
                         >
-                          <img
-                            src={booking.venue.media[0]}
-                            alt=""
-                            style={{
-                              borderRadius: '20px',
-                              border: '3px solid',
-                              borderColor: '#00679F',
-                              maxWidth: '300px',
-                              maxHeight: '300px',
-                            }}
-                          />
-                          <Box>
+                          {booking.venue.media[0] && (
+                            <img
+                              src={booking.venue.media[0]}
+                              alt=""
+                              style={{
+                                borderRadius: '20px',
+                                border: '3px solid',
+                                borderColor: '#00679F',
+                                maxWidth: '300px',
+                                maxHeight: '300px',
+                              }}
+                            />
+                          )}
+                          <Box
+                            display={'flex'}
+                            flexDirection={'column'}
+                            gap={'2rem'}
+                          >
                             <Typography
                               variant="h2"
                               textAlign={{ md: 'center' }}
                             >
                               {booking.venue.name}
                             </Typography>
-                            <Link to={`/booking/${booking.id}`}>
-                              <Button variant="contained">more info</Button>
-                            </Link>
+                            <Typography
+                              variant="h2"
+                              textAlign={{ md: 'center' }}
+                            >
+                              {dayjs(booking.dateFrom).format('DD.MM.YY')} -{' '}
+                              {dayjs(booking.dateTo).format('DD.MM.YY')}
+                            </Typography>
+                            <Typography
+                              variant="h2"
+                              textAlign={{ md: 'center' }}
+                            >
+                              guests: {booking.guests}
+                            </Typography>
+                            <Typography
+                              variant="h2"
+                              textAlign={{ md: 'center' }}
+                            >
+                              {booking.price}
+                            </Typography>
                           </Box>
                         </Box>
                       </SwiperSlide>
