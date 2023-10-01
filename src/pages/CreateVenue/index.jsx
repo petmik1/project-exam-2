@@ -83,8 +83,6 @@ function CreateVenue() {
   const [user] = useState(storage.load('user'))
 
   const onSubmit = async (data) => {
-    console.log(data)
-
     try {
       setLoading(true)
       const response = await api.post('/venues', data, {
@@ -92,11 +90,11 @@ function CreateVenue() {
           Authorization: `Bearer ${user.accessToken}`,
         },
       })
-      console.log(response.data)
-      setSuccess(true)
+      if (200 >= response.status <= 299) {
+        setSuccess(true)
+      }
     } catch (error) {
       setErrorMessage(error.toJSON().message)
-      console.log(error)
     } finally {
       setLoading(false)
     }

@@ -83,13 +83,14 @@ function Product() {
 
     try {
       setLoading(true)
-    const response = await api.post('/bookings', booking, {
-      headers: {
-        Authorization: `Bearer ${storage.load('user').accessToken}`,
-      },
-    })
-    console.log(response.data)
-    setSuccess(true)
+      const response = await api.post('/bookings', booking, {
+        headers: {
+          Authorization: `Bearer ${storage.load('user').accessToken}`,
+        },
+      })
+      if (200 >= response.status <= 299) {
+        setSuccess(true)
+      }
     } catch (error) {
       setErrorMessageCreate(error.toJSON().message)
     } finally {
@@ -123,10 +124,7 @@ function Product() {
           </AlertTitle>
           {errorMessage}
         </Alert>
-        <Alert
-          severity="success"
-          sx={{ display: success ? 'flex' : 'none' }}
-        >
+        <Alert severity="success" sx={{ display: success ? 'flex' : 'none' }}>
           <AlertTitle sx={{ fontWeight: 'bold' }}>
             your booking has been created
           </AlertTitle>
